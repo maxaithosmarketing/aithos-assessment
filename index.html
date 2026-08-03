@@ -1,0 +1,1162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Profile to Profit Assessment</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --orange: #f26314;
+    --black: #141414;
+    --bg: #f7f6f2;
+    --card: #f5f4f2;
+    --panel: #ffffff;
+    --line: #e9e6e0;
+    --text: #1c1c1c;
+    --muted: #7d7d7d;
+    --red: #d64545;
+    --green: #3e9c5c;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { height: 100%; }
+  html { overflow-x: hidden; }
+  body {
+    font-family: 'Inter', Arial, Helvetica, sans-serif;
+    background: var(--bg);
+    background-image: radial-gradient(ellipse 80% 60% at 50% 0%, #ffffff 0%, rgba(255,255,255,0) 70%);
+    color: var(--text);
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    font-size: 16px;
+    line-height: 1.5;
+    overflow-x: hidden;
+  }
+  .topbar {
+    background: rgba(255,255,255,0.85);
+    border-bottom: 1px solid var(--line);
+    backdrop-filter: blur(6px);
+  }
+  .topbar-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 12px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+  }
+  .logo { height: 30px; display: block; }
+  .topbar-title {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .topbar-right { min-width: 92px; display: flex; justify-content: flex-end; }
+  main {
+    flex: 1;
+    width: 100%;
+    max-width: 680px;
+    margin: 0 auto;
+    padding: 28px 20px 48px;
+  }
+  main.landing { max-width: 1100px; padding-top: 44px; }
+  footer {
+    color: var(--muted);
+    font-size: 13px;
+    text-align: center;
+    padding: 26px 16px 30px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+  }
+  .footer-logo { height: 20px; opacity: 0.85; }
+  h1 { font-size: 28px; line-height: 1.25; color: var(--black); font-weight: 800; }
+  h2 { font-size: 22px; line-height: 1.3; color: var(--black); font-weight: 700; }
+  .panel {
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    padding: 26px 22px;
+    box-shadow: 0 14px 34px rgba(20,20,20,0.06);
+  }
+  .btn {
+    display: block;
+    width: 100%;
+    min-height: 48px;
+    background: var(--orange);
+    color: #ffffff;
+    font-weight: 700;
+    font-size: 15px;
+    letter-spacing: 1.2px;
+    text-transform: uppercase;
+    font-family: inherit;
+    border: none;
+    border-radius: 10px;
+    padding: 15px 18px;
+    cursor: pointer;
+    text-align: center;
+    text-decoration: none;
+    transition: background 0.15s ease;
+  }
+  .btn:hover { background: #d95410; }
+  .micro { color: var(--muted); font-size: 13px; text-align: center; margin-top: 12px; }
+  .lang-btn {
+    background: none;
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    padding: 5px 11px;
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--muted);
+    cursor: pointer;
+  }
+  .lang-btn + .lang-btn { margin-left: 6px; }
+  .lang-btn.active { border-color: var(--orange); color: var(--orange); }
+
+  /* ---------- Landing ---------- */
+  .hero { text-align: center; max-width: 780px; margin: 0 auto; }
+  .hero h1 {
+    font-size: clamp(34px, 5.5vw, 56px);
+    line-height: 1.12;
+    letter-spacing: -0.02em;
+  }
+  .hero .accent {
+    font-family: 'Instrument Serif', Georgia, serif;
+    font-style: italic;
+    font-weight: 400;
+    color: var(--orange);
+    text-decoration: underline;
+    text-decoration-thickness: 2px;
+    text-underline-offset: 7px;
+  }
+  .hero .sub {
+    color: #55534f;
+    font-size: 17px;
+    max-width: 620px;
+    margin: 20px auto 0;
+  }
+  .mockup {
+    position: relative;
+    height: 380px;
+    max-width: 760px;
+    margin: 46px auto 10px;
+  }
+  .mock-card { position: absolute; border-radius: 16px; }
+  .mock-center {
+    left: 50%;
+    top: 0;
+    transform: translateX(-50%);
+    width: 256px;
+    z-index: 3;
+    background: var(--black);
+    padding: 22px 20px 26px;
+    box-shadow: 0 30px 60px rgba(20,20,20,0.28);
+  }
+  .mock-eyebrow {
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 2.5px;
+    color: var(--orange);
+    text-transform: uppercase;
+    text-align: center;
+  }
+  .mock-title {
+    color: #ffffff;
+    font-weight: 800;
+    font-size: 17px;
+    letter-spacing: 0.5px;
+    text-align: center;
+    margin-top: 6px;
+    text-transform: uppercase;
+  }
+  .mock-serif {
+    font-family: 'Instrument Serif', Georgia, serif;
+    font-style: italic;
+    color: #b5b3af;
+    font-size: 12px;
+    text-align: center;
+    margin-top: 3px;
+  }
+  .mock-stages { margin-top: 18px; position: relative; }
+  .mock-stage { display: flex; align-items: center; gap: 11px; padding: 7px 0; }
+  .mock-dot {
+    width: 11px; height: 11px;
+    border-radius: 50%;
+    border: 2px solid #4a4846;
+    flex-shrink: 0;
+  }
+  .mock-stage.active .mock-dot { background: var(--orange); border-color: var(--orange); }
+  .mock-stage span { font-size: 11.5px; color: #8b8987; font-weight: 600; }
+  .mock-stage.active span { color: #ffffff; }
+  .mock-side {
+    top: 42px;
+    width: 224px;
+    z-index: 1;
+    background: #201f1d;
+    padding: 18px 17px 20px;
+    box-shadow: 0 20px 44px rgba(20,20,20,0.22);
+  }
+  .mock-left { left: calc(50% - 318px); transform: rotate(-8deg); }
+  .mock-right { right: calc(50% - 318px); transform: rotate(8deg); }
+  .mock-side-title {
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    color: #b5b3af;
+    text-transform: uppercase;
+    text-align: center;
+    margin-bottom: 14px;
+  }
+  .mock-pillar { margin-top: 10px; }
+  .mock-pillar-name { font-size: 9.5px; color: #8b8987; font-weight: 600; margin-bottom: 4px; }
+  .mock-track { background: #383634; height: 6px; border-radius: 3px; overflow: hidden; }
+  .mock-fill { height: 100%; border-radius: 3px; }
+  .mock-step { display: flex; align-items: center; gap: 10px; margin-top: 13px; }
+  .mock-step-num {
+    width: 18px; height: 18px;
+    border-radius: 50%;
+    background: rgba(242,99,20,0.18);
+    color: var(--orange);
+    font-size: 10px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .mock-skel { height: 7px; border-radius: 4px; background: #383634; flex: 1; }
+  .mock-skel.short { flex: 0.55; }
+  .start-card {
+    max-width: 560px;
+    margin: 26px auto 0;
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 18px;
+    padding: 30px 28px;
+    box-shadow: 0 24px 50px rgba(20,20,20,0.10);
+    position: relative;
+  }
+  .start-card .progress-label { text-align: left; }
+  .start-card .progress-track { margin-bottom: 22px; }
+  .start-peek {
+    position: absolute;
+    left: -34px;
+    bottom: 18px;
+    width: 74px;
+    height: 92px;
+    background: var(--black);
+    border-radius: 10px;
+    transform: rotate(-10deg);
+    z-index: -1;
+    box-shadow: 0 14px 30px rgba(20,20,20,0.2);
+  }
+  .start-peek::after {
+    content: "";
+    position: absolute;
+    left: 12px; right: 12px; top: 16px;
+    height: 5px;
+    border-radius: 3px;
+    background: var(--orange);
+    box-shadow: 0 14px 0 #383634, 0 28px 0 #383634, 0 42px 0 #383634;
+  }
+  .ticker { background: var(--black); overflow: hidden; padding: 15px 0; }
+  .ticker-track {
+    display: inline-flex;
+    align-items: center;
+    white-space: nowrap;
+    animation: tickermove 36s linear infinite;
+  }
+  @keyframes tickermove { to { transform: translateX(-50%); } }
+  .tick-item {
+    color: #d8d6d2;
+    font-size: 11.5px;
+    font-weight: 700;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    padding: 0 26px;
+  }
+  .tick-dot { color: var(--orange); font-size: 13px; }
+  @media (max-width: 680px) {
+    .topbar-title { display: none; }
+    .mockup {
+      transform: scale(0.58);
+      transform-origin: top center;
+      height: 226px;
+      margin-top: 34px;
+    }
+    .start-peek { display: none; }
+    .hero .sub { font-size: 16px; }
+  }
+
+  /* ---------- Lead capture ---------- */
+  .field { margin-top: 18px; }
+  .field label { display: block; font-weight: 600; font-size: 15px; margin-bottom: 7px; color: var(--black); }
+  .field input {
+    width: 100%;
+    min-height: 48px;
+    padding: 11px 14px;
+    font-size: 16px;
+    font-family: inherit;
+    border: 1px solid #dddbd7;
+    border-radius: 8px;
+    background: #ffffff;
+    color: var(--text);
+  }
+  .field input:focus { outline: none; border-color: var(--orange); }
+  .field input.invalid { border-color: var(--red); }
+  .handle-wrap { position: relative; }
+  .handle-wrap .at {
+    position: absolute;
+    left: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--muted);
+    font-weight: 600;
+  }
+  .handle-wrap input { padding-left: 32px; }
+
+  /* ---------- Questions ---------- */
+  .q-top { display: flex; align-items: center; gap: 12px; margin-bottom: 18px; }
+  .back-btn {
+    background: none;
+    border: none;
+    font-size: 22px;
+    line-height: 1;
+    color: var(--muted);
+    cursor: pointer;
+    padding: 11px 12px 11px 0;
+    min-height: 44px;
+    font-family: inherit;
+  }
+  .back-btn:hover { color: var(--black); }
+  .progress-wrap { flex: 1; }
+  .progress-label { font-size: 13px; font-weight: 700; color: var(--orange); margin-bottom: 5px; }
+  .progress-track { background: var(--card); height: 8px; border-radius: 4px; overflow: hidden; }
+  .progress-fill { background: var(--orange); height: 100%; border-radius: 4px; transition: width 0.3s ease; }
+  .options { margin-top: 22px; display: flex; flex-direction: column; gap: 10px; }
+  .option {
+    width: 100%;
+    min-height: 48px;
+    text-align: left;
+    background: var(--card);
+    border: 2px solid var(--card);
+    border-radius: 10px;
+    padding: 13px 15px;
+    font-size: 16px;
+    font-family: inherit;
+    color: var(--text);
+    cursor: pointer;
+  }
+  .option:hover { border-color: #dddbd7; }
+  .option.selected { border-color: var(--orange); background: #fdeee2; }
+  .open-area {
+    width: 100%;
+    min-height: 130px;
+    margin-top: 22px;
+    padding: 13px 15px;
+    font-size: 16px;
+    font-family: inherit;
+    color: var(--text);
+    background: var(--card);
+    border: 2px solid var(--card);
+    border-radius: 10px;
+    resize: vertical;
+  }
+  .open-area:focus { outline: none; border-color: var(--orange); background: #ffffff; }
+  .interstitial { text-align: center; padding-top: 90px; }
+  .spinner {
+    width: 42px;
+    height: 42px;
+    border: 4px solid #eceae5;
+    border-top-color: var(--orange);
+    border-radius: 50%;
+    margin: 0 auto 24px;
+    animation: spin 0.9s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* ---------- Results ---------- */
+  .greet-sub { color: var(--muted); margin-top: 6px; font-size: 15px; }
+  .stage-card {
+    background: var(--card);
+    border-left: 5px solid var(--orange);
+    border-radius: 8px;
+    padding: 20px 18px;
+    margin-top: 24px;
+  }
+  .stage-card h2 { font-size: 24px; }
+  .stage-card p { margin-top: 10px; }
+  .pillars { margin-top: 30px; display: flex; flex-direction: column; gap: 24px; }
+  .pillar-head { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; }
+  .pillar-name { font-weight: 700; color: var(--black); font-size: 16px; }
+  .pillar-pct { font-weight: 800; font-size: 16px; }
+  .bar-track { background: var(--card); height: 12px; border-radius: 6px; overflow: hidden; margin-top: 8px; }
+  .bar-fill { height: 100%; border-radius: 6px; width: 0; transition: width 0.9s ease; }
+  .verdict { color: var(--text); font-size: 14.5px; margin-top: 8px; }
+  .fix-section { margin-top: 34px; }
+  .fix-intro { margin-top: 10px; }
+  .fix-list { margin-top: 14px; padding-left: 22px; display: flex; flex-direction: column; gap: 10px; }
+  .fix-outro { margin-top: 12px; }
+  .benchmark {
+    margin-top: 30px;
+    background: var(--card);
+    border-radius: 8px;
+    padding: 16px 18px;
+    font-size: 15px;
+  }
+  .outro-block {
+    margin-top: 34px;
+    background: var(--black);
+    border-radius: 16px;
+    padding: 30px 26px;
+    text-align: center;
+    color: #ffffff;
+    font-size: 20px;
+    font-weight: 700;
+    line-height: 1.4;
+  }
+  .outro-block .accent {
+    font-family: 'Instrument Serif', Georgia, serif;
+    font-style: italic;
+    font-weight: 400;
+    color: var(--orange);
+    text-decoration: underline;
+    text-decoration-thickness: 2px;
+    text-underline-offset: 6px;
+  }
+  .btn-outline {
+    margin-top: 16px;
+    background: none;
+    color: var(--black);
+    border: 2px solid var(--black);
+    transition: background 0.15s ease, color 0.15s ease;
+  }
+  .btn-outline:hover { background: var(--black); color: #ffffff; }
+  .c-red { color: var(--red); }
+  .c-orange { color: var(--orange); }
+  .c-green { color: var(--green); }
+  .b-red { background: var(--red); }
+  .b-orange { background: var(--orange); }
+  .b-green { background: var(--green); }
+  @media print {
+    * {
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+    html, body { overflow-x: visible; }
+    body { background: #ffffff; background-image: none; }
+    .no-print, #ticker-slot, .topbar-right { display: none !important; }
+    .topbar { background: #ffffff; backdrop-filter: none; }
+    main { max-width: 100%; padding: 16px 0 0; }
+    .panel { border: none; box-shadow: none; padding: 0; }
+    .stage-card, .pillar, .benchmark, .outro-block, .fix-list li { break-inside: avoid; }
+    .fix-section { break-before: auto; }
+    .bar-fill { transition: none; }
+  }
+</style>
+</head>
+<body>
+<header class="topbar">
+  <div class="topbar-inner">
+    <img class="logo" id="logo" alt="Aithos" src="">
+    <div class="topbar-title">Profile to Profit Assessment&trade;</div>
+    <div class="topbar-right" id="topbar-right"></div>
+  </div>
+</header>
+<main id="app"></main>
+<div id="ticker-slot"></div>
+<footer>
+  <img class="footer-logo" id="footer-logo" alt="Aithos" src="">
+  <div id="footer-text"></div>
+</footer>
+<script>
+const RESULTS_ENDPOINT = 'https://aithos.app.n8n.cloud/webhook/aithos-assessment';
+const LOGO_SRC = 'data:image/webp;base64,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';
+
+const COPY = {
+  en: {
+    landingHeadline: "Find out why your content isn't bringing you clients.",
+    landingHeadlineHtml: "Find out why your content isn't <span class=\"accent\">bringing you clients.</span>",
+    landingSub: "13 questions, under 5 minutes. You get a personalized breakdown of where your personal brand stands today and the exact first fix to start getting clients from social.",
+    landingBtn: "Start the assessment",
+    landingMicro: "Free. Takes less than 5 minutes.",
+    mockTitle: "Your breakdown",
+    leadHeading: "First, so your breakdown is actually yours.",
+    leadName: "First name",
+    leadHandle: "Instagram handle",
+    leadFollowers: "Number of followers",
+    leadBtn: "Continue",
+    continueBtn: "Continue",
+    analyzing: "Analyzing your answers...",
+    greeting: ", here is your breakdown.",
+    greetingSub: "Based on your 13 answers.",
+    fixHeading: "Your #1 fix: ",
+    fixIntro: "Do this first. It is free, it is yours, and it works without me.",
+    benchmark: "Accounts your size that fix this typically start seeing inbound DMs within weeks, profile visits that convert, and calls with strangers instead of only referrals. Not overnight, but structurally.",
+    outroHtml: "You now have the information. What will separate you from your competitors is <span class=\"accent\">actually implementing it.</span>",
+    downloadBtn: "Download as PDF",
+    footer: "Aithos Marketing · Precision over everything."
+  },
+  nl: {
+    landingHeadline: "Ontdek waarom je content je geen klanten oplevert.",
+    landingHeadlineHtml: "Ontdek waarom je content je <span class=\"accent\">geen klanten oplevert.</span>",
+    landingSub: "13 vragen, minder dan 5 minuten. Je krijgt een gepersonaliseerde breakdown van waar je personal brand nu staat en de exacte eerste fix om klanten uit social te gaan halen.",
+    landingBtn: "Start de assessment",
+    landingMicro: "Gratis. Duurt minder dan 5 minuten.",
+    mockTitle: "Jouw breakdown",
+    leadHeading: "Eerst even, zodat jouw breakdown ook echt van jou is.",
+    leadName: "Voornaam",
+    leadHandle: "Instagram handle",
+    leadFollowers: "Aantal volgers",
+    leadBtn: "Doorgaan",
+    continueBtn: "Doorgaan",
+    analyzing: "Je antwoorden worden geanalyseerd...",
+    greeting: ", dit is jouw breakdown.",
+    greetingSub: "Gebaseerd op je 13 antwoorden.",
+    fixHeading: "Jouw #1 fix: ",
+    fixIntro: "Doe dit eerst. Het is gratis, het is van jou, en het werkt ook zonder mij.",
+    benchmark: "Accounts van jouw formaat die dit fixen, zien meestal binnen weken de eerste inbound DMs, profielbezoeken die converteren en calls met vreemden in plaats van alleen referrals. Niet van de ene op de andere dag, maar structureel.",
+    outroHtml: "Je hebt nu alle informatie. Wat jou gaat onderscheiden van je concurrenten, is <span class=\"accent\">het ook echt implementeren.</span>",
+    downloadBtn: "Download als PDF",
+    footer: "Aithos Marketing · Precision over everything."
+  }
+};
+
+const QUESTIONS = [
+  { id: 'q1', type: 'open',
+    text: { en: "Who do you help, and with what?", nl: "Wie help je, en waarmee?" } },
+  { id: 'q2', type: 'mc',
+    text: { en: "How long have you been posting content consistently?", nl: "Hoe lang post je al consistent content?" },
+    options: [
+      { points: 0, en: "Not really consistently yet", nl: "Eigenlijk nog niet echt consistent" },
+      { points: 1, en: "Less than 6 months", nl: "Korter dan 6 maanden" },
+      { points: 2, en: "6 to 18 months", nl: "6 tot 18 maanden" },
+      { points: 3, en: "Over 18 months", nl: "Langer dan 18 maanden" }
+    ] },
+  { id: 'q3', type: 'mc',
+    text: { en: "How many pieces of content do you post in a normal week?", nl: "Hoeveel content post je in een normale week?" },
+    options: [
+      { points: 0, en: "0 to 1", nl: "0 tot 1" },
+      { points: 1, en: "2 to 3", nl: "2 tot 3" },
+      { points: 2, en: "4 to 6", nl: "4 tot 6" },
+      { points: 3, en: "7 or more", nl: "7 of meer" }
+    ] },
+  { id: 'q4', type: 'mc',
+    text: { en: "Is there a plan behind what you post?", nl: "Zit er een plan achter wat je post?" },
+    options: [
+      { points: 0, en: "I post whatever comes up that day", nl: "Ik post wat er die dag in me opkomt" },
+      { points: 1, en: "I have rough themes I rotate through", nl: "Ik heb grofweg wat thema's" },
+      { points: 2, en: "I plan content ahead, but without a real strategy behind it", nl: "Ik plan vooruit, maar zonder echte strategie erachter" },
+      { points: 3, en: "Every post has a job: attract, build trust, or convert", nl: "Elke post heeft een taak: aantrekken, vertrouwen bouwen of converteren" }
+    ] },
+  { id: 'q5', type: 'mc',
+    text: { en: "If a stranger lands on your profile, is it instantly clear who you help and what result you deliver?", nl: "Als een vreemde op je profiel komt, is dan direct duidelijk wie je helpt en welk resultaat je levert?" },
+    options: [
+      { points: 0, en: "Honestly, no", nl: "Eerlijk gezegd niet" },
+      { points: 1, en: "It is somewhere in my bio, but not sharp", nl: "Het staat ergens in m'n bio, maar niet scherp" },
+      { points: 2, en: "Mostly clear, could be sharper", nl: "Grotendeels duidelijk, kan scherper" },
+      { points: 3, en: "Crystal clear: who, what result, and what to do next", nl: "Glashelder: wie, welk resultaat, en wat de volgende stap is" }
+    ] },
+  { id: 'q6', type: 'mc',
+    text: { en: "Can a visitor see proof of client results on your profile without scrolling far?", nl: "Ziet een bezoeker bewijs van klantresultaten zonder ver te scrollen?" },
+    options: [
+      { points: 0, en: "I do not really share client results", nl: "Ik deel eigenlijk geen klantresultaten" },
+      { points: 1, en: "They are somewhere in my feed", nl: "Ze staan ergens in m'n feed" },
+      { points: 2, en: "I share them regularly in posts or stories", nl: "Ik deel ze regelmatig in posts of stories" },
+      { points: 3, en: "Pinned and in highlights: results are the first thing you see", nl: "Vastgezet en in highlights: resultaten zijn het eerste wat je ziet" }
+    ] },
+  { id: 'q7', type: 'mc',
+    text: { en: "How many DMs do you get in a normal week from people interested in working with you?", nl: "Hoeveel DMs krijg je in een normale week van mensen die interesse hebben om met je te werken?" },
+    options: [
+      { points: 0, en: "Zero", nl: "Nul" },
+      { points: 1, en: "1 to 5", nl: "1 tot 5" },
+      { points: 2, en: "5 to 20", nl: "5 tot 20" },
+      { points: 3, en: "More than 20", nl: "Meer dan 20" }
+    ] },
+  { id: 'q8', type: 'mc',
+    text: { en: "What happens when someone shows interest in your DMs?", nl: "Wat gebeurt er als iemand interesse toont in je DMs?" },
+    options: [
+      { points: 0, en: "I reply when I see it and wing it", nl: "Ik reageer als ik het zie en improviseer" },
+      { points: 1, en: "I have a rough way of handling it, but no fixed process", nl: "Ik heb grofweg een aanpak, maar geen vast proces" },
+      { points: 2, en: "I have a fixed process that usually ends in a call link", nl: "Ik heb een vast proces dat meestal eindigt in een call-link" },
+      { points: 3, en: "I have a full system: qualification, booking, follow-up, tracking", nl: "Ik heb een volledig systeem: kwalificatie, boeking, opvolging, tracking" }
+    ] },
+  { id: 'q9', type: 'mc',
+    text: { en: "Do your posts tell people what to do next?", nl: "Vertellen je posts mensen wat de volgende stap is?" },
+    options: [
+      { points: 0, en: "No, I just post the content", nl: "Nee, ik post gewoon de content" },
+      { points: 1, en: "Sometimes I mention my link or DMs", nl: "Soms noem ik m'n link of DMs" },
+      { points: 2, en: "Most posts have some kind of call to action", nl: "De meeste posts hebben een soort call-to-action" },
+      { points: 3, en: "Yes, every post routes somewhere on purpose: keyword, DM, link or video", nl: "Ja, elke post stuurt bewust ergens naartoe: keyword, DM, link of video" }
+    ] },
+  { id: 'q10', type: 'mc',
+    text: { en: "Where do most of your clients actually come from right now?", nl: "Waar komen je klanten op dit moment echt vandaan?" },
+    options: [
+      { points: 0, en: "I do not have paying clients yet", nl: "Ik heb nog geen betalende klanten" },
+      { points: 1, en: "Referrals and my own network", nl: "Referrals en m'n eigen netwerk" },
+      { points: 2, en: "A mix of network and inbound from content", nl: "Een mix van netwerk en inbound uit content" },
+      { points: 3, en: "Mostly inbound: content, DMs and calls from strangers", nl: "Vooral inbound: content, DMs en calls van vreemden" }
+    ] },
+  { id: 'q11', type: 'mc',
+    text: { en: "What does your monthly revenue look like on average?", nl: "Hoe ziet je maandomzet er gemiddeld uit?" },
+    options: [
+      { points: 1, en: "Under €3K", nl: "Onder de €3K" },
+      { points: 3, en: "€3K to €10K", nl: "€3K tot €10K" },
+      { points: 3, en: "€10K to €25K", nl: "€10K tot €25K" },
+      { points: 2, en: "Over €25K", nl: "Boven de €25K" }
+    ] },
+  { id: 'q12', type: 'open',
+    text: { en: "What is the most frustrating part of trying to get clients from your content right now?", nl: "Wat is op dit moment het meest frustrerende aan klanten proberen te halen uit je content?" } },
+  { id: 'q13', type: 'open',
+    text: { en: "If content brought you a steady flow of clients, what would that actually change for you?", nl: "Als content je een stabiele stroom klanten zou opleveren, wat zou dat concreet voor je veranderen?" } }
+];
+
+const PILLARS = [
+  { key: 'positioning', name: 'Positioning & Profile', qs: ['q5', 'q6'], max: 6 },
+  { key: 'content', name: 'Content Engine', qs: ['q2', 'q3', 'q4'], max: 9 },
+  { key: 'conversion', name: 'Conversion System', qs: ['q7', 'q8', 'q9'], max: 9 },
+  { key: 'offer', name: 'Offer & Client Flow', qs: ['q10', 'q11'], max: 6 }
+];
+const TIE_PRIORITY = ['conversion', 'positioning', 'content', 'offer'];
+const STAGE_MAP = { positioning: 1, content: 1, conversion: 2, offer: 3 };
+
+const STAGES = {
+  1: { name: { en: "The Invisible Expert", nl: "De Onzichtbare Expert" },
+       diagnosis: {
+         en: "You are good at what you do. Your profile just does not say it. Every visitor right now has to work to figure out who you help and why they should care, and strangers do not do that work.",
+         nl: "Je bent goed in wat je doet. Alleen je profiel vertelt het niet. Elke bezoeker moet nu zelf uitzoeken wie je helpt en waarom dat interessant is, en vreemden doen dat werk niet." } },
+  2: { name: { en: "Posting Into the Void", nl: "Posten in het Niets" },
+       diagnosis: {
+         en: "The work ethic is there and the content proves it. What is missing is the layer underneath: nothing on your profile catches the attention your posts create and turns it into conversations. You are filling a bucket with a hole in it.",
+         nl: "De werkethiek is er en je content bewijst het. Wat mist is de laag eronder: niks op je profiel vangt de aandacht op die je posts creëren en zet die om in gesprekken. Je vult een emmer met een gat erin." } },
+  3: { name: { en: "The Referral Prisoner", nl: "De Referral-Gevangene" },
+       diagnosis: {
+         en: "Your business works. Your acquisition does not scale. Every month starts at zero because clients come from a network that is slowly running out, and the content you post is not yet pulling strangers in to replace it. That ceiling you feel is structural, not personal.",
+         nl: "Je business werkt. Je acquisitie schaalt alleen niet. Elke maand begint op nul omdat klanten uit een netwerk komen dat langzaam opraakt, en je content trekt nog geen vreemden aan om dat te vervangen. Dat plafond dat je voelt is structureel, niet persoonlijk." } },
+  4: { name: { en: "The Conversion Leak", nl: "Het Conversielek" },
+       diagnosis: {
+         en: "Most of the machine is built. Attention comes in, some of it even converts, but there are leaks at the exact points where interest becomes a conversation: CTAs, DM handling, follow-up. At your stage, fixing the leaks is worth more than making more content.",
+         nl: "Het grootste deel van de machine staat. Aandacht komt binnen, een deel converteert zelfs, maar er zitten lekken op precies de punten waar interesse een gesprek wordt: CTA's, DM-afhandeling, opvolging. In jouw fase is lekken dichten meer waard dan meer content maken." } },
+  5: { name: { en: "Ready to Scale", nl: "Klaar om te Schalen" },
+       diagnosis: {
+         en: "Honestly, your foundation is better than most accounts twice your size. The conversation to have is not about fixing, it is about volume, consistency and compounding: long form, systemized output, and protecting your time.",
+         nl: "Eerlijk: je fundament is beter dan dat van de meeste accounts die twee keer zo groot zijn. Het gesprek gaat niet over repareren, maar over volume, consistentie en compounding: long form, gesystematiseerde output en je tijd beschermen." } }
+};
+
+const VERDICTS = {
+  positioning: {
+    red: { en: "A stranger landing on your profile today cannot tell within 5 seconds who you help and what result you deliver, so most of them leave without acting.",
+           nl: "Een vreemde die nu op je profiel komt, kan niet binnen 5 seconden zien wie je helpt en welk resultaat je levert, dus de meesten vertrekken zonder iets te doen." },
+    orange: { en: "The pieces are there, but the message asks visitors to work for it, and strangers never do the work.",
+              nl: "De onderdelen zijn er, maar de boodschap vraagt werk van je bezoekers, en vreemden doen dat werk nooit." },
+    green: { en: "Clear who you serve and why it pays to follow you. This pillar is doing its job.",
+             nl: "Duidelijk wie je helpt en waarom het loont om je te volgen. Deze pijler doet z'n werk." }
+  },
+  content: {
+    red: { en: "Content is going out too rarely or too randomly to build momentum, so the algorithm and your audience both keep forgetting you.",
+           nl: "Content gaat er te weinig of te willekeurig uit om momentum op te bouwen, dus het algoritme en je publiek blijven je vergeten." },
+    orange: { en: "You show up, which puts you ahead of most, but without every post having a job, the effort compounds much slower than it should.",
+              nl: "Je bent er, en daarmee loop je voor op de meesten, maar zolang niet elke post een taak heeft, stapelt je inspanning veel langzamer op dan zou moeten." },
+    green: { en: "Consistent output with intent behind it. The engine runs; now it is about what the engine feeds into.",
+             nl: "Consistente output met intentie erachter. De motor loopt; nu gaat het om waar de motor in uitmondt." }
+  },
+  conversion: {
+    red: { en: "There is currently no path from seeing your content to becoming your client. Attention arrives and evaporates, which is why effort and income feel disconnected.",
+           nl: "Er is op dit moment geen route van je content zien naar jouw klant worden. Aandacht komt binnen en verdampt, en daarom voelen inspanning en inkomen los van elkaar." },
+    orange: { en: "Some interest converts, but it depends on you catching it manually. What is missing is a system that catches it every time.",
+              nl: "Een deel van de interesse converteert, maar het hangt ervan af of jij het toevallig opvangt. Wat mist is een systeem dat het elke keer opvangt." },
+    green: { en: "Interest gets caught, routed and followed up. This is the pillar most people never build; protect it.",
+             nl: "Interesse wordt opgevangen, doorgestuurd en opgevolgd. Dit is de pijler die de meesten nooit bouwen; bescherm hem." }
+  },
+  offer: {
+    red: { en: "Right now clients arrive by luck or not at all, which makes everything else feel pointless even when it is working.",
+           nl: "Klanten komen nu binnen op geluk of helemaal niet, waardoor al het andere zinloos voelt, zelfs als het werkt." },
+    orange: { en: "The business runs on referrals and network. That validates the offer, but it also caps it: you cannot scale word of mouth on demand.",
+              nl: "De business draait op referrals en netwerk. Dat valideert je aanbod, maar het begrenst het ook: mond-tot-mond kun je niet op commando schalen." },
+    green: { en: "Strangers already become clients. The question is volume, not mechanism.",
+             nl: "Vreemden worden al klant. De vraag is volume, niet het mechanisme." }
+  }
+};
+
+const PLANS = {
+  positioning: {
+    en: { steps: [
+      "Rewrite your bio to the formula: who you help, with what result, in what timeframe, plus one clear next step.",
+      "Create a results highlight: your best client outcomes, screenshots and numbers, pinned first.",
+      "Pin your strongest converting post, not your most viral one." ],
+      outro: "All three together take under two hours and change what every future visitor sees." },
+    nl: { steps: [
+      "Herschrijf je bio volgens de formule: wie je helpt, met welk resultaat, in welke termijn, plus één duidelijke volgende stap.",
+      "Maak een resultaten-highlight: je beste klantresultaten, screenshots en cijfers, vooraan vastgezet.",
+      "Zet je sterkst converterende post vast, niet je meest virale." ],
+      outro: "Alle drie samen kosten nog geen twee uur en veranderen wat elke toekomstige bezoeker ziet." }
+  },
+  content: {
+    en: { steps: [
+      "Pick a posting rhythm you can hold for 90 days, even if it is only 3 per week, and hold it.",
+      "Give every post one job before you make it: attract strangers, build trust, or convert. If you cannot name the job, do not post it.",
+      "Split your week: most posts for reach and trust, one per week that directly addresses buying-ready followers." ],
+      outro: "" },
+    nl: { steps: [
+      "Kies een postritme dat je 90 dagen kunt volhouden, al is het maar 3 per week, en houd het vol.",
+      "Geef elke post één taak voordat je hem maakt: vreemden aantrekken, vertrouwen bouwen of converteren. Kun je de taak niet benoemen, post hem dan niet.",
+      "Verdeel je week: de meeste posts voor bereik en vertrouwen, één per week die zich direct richt op volgers die klaar zijn om te kopen." ],
+      outro: "" }
+  },
+  conversion: {
+    en: { steps: [
+      "End every post with one specific next step: comment a keyword, send a DM, watch the pinned video. One, not three.",
+      "Decide your DM flow once and write it down: what you say when someone shows interest, in what order, ending where.",
+      "Reply to every new follower and every story reaction with a genuine question. That habit alone creates conversations from attention you already have." ],
+      outro: "" },
+    nl: { steps: [
+      "Sluit elke post af met één specifieke volgende stap: reageer met een keyword, stuur een DM, bekijk de vastgezette video. Eén, niet drie.",
+      "Bepaal je DM-flow één keer en schrijf hem uit: wat je zegt als iemand interesse toont, in welke volgorde, en waar het eindigt.",
+      "Reageer op elke nieuwe volger en elke story-reactie met een oprechte vraag. Die gewoonte alleen al maakt gesprekken van aandacht die je al hebt." ],
+      outro: "" }
+  },
+  offer: {
+    en: { steps: [
+      "Write down your offer in one sentence: who, what transformation, what timeframe. If it takes a paragraph, it is not ready to sell to strangers.",
+      "Make the invisible visible: talk about your offer and your client results openly, at least weekly. Your network buying quietly is not proof strangers know what you sell.",
+      "Ask your last three clients why they actually bought. Their words are your future content and copy." ],
+      outro: "" },
+    nl: { steps: [
+      "Schrijf je aanbod op in één zin: wie, welke transformatie, welke termijn. Heb je er een alinea voor nodig, dan is het nog niet klaar om aan vreemden te verkopen.",
+      "Maak het onzichtbare zichtbaar: praat openlijk over je aanbod en je klantresultaten, minstens wekelijks. Dat je netwerk stilletjes koopt, bewijst niet dat vreemden weten wat je verkoopt.",
+      "Vraag je laatste drie klanten waarom ze echt kochten. Hun woorden zijn je toekomstige content en copy." ],
+      outro: "" }
+  }
+};
+
+const state = {
+  lang: new URLSearchParams(location.search).get('lang') === 'nl' ? 'nl' : 'en',
+  screen: 'landing',
+  qIndex: 0,
+  lead: { name: '', handle: '', email: '', followers: '' },
+  answers: {},
+  posted: false,
+  advancing: false
+};
+
+function t(key) { return COPY[state.lang][key]; }
+
+function esc(s) {
+  return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+
+function colorFor(pct) {
+  if (pct < 40) return 'red';
+  if (pct < 70) return 'orange';
+  return 'green';
+}
+
+function computeResults() {
+  const pillars = PILLARS.map(function (p) {
+    let points = 0;
+    p.qs.forEach(function (qid) {
+      const q = QUESTIONS.find(function (x) { return x.id === qid; });
+      points += q.options[state.answers[qid]].points;
+    });
+    const pct = Math.round(points / p.max * 100);
+    return { key: p.key, name: p.name, points: points, pct: pct, color: colorFor(pct) };
+  });
+
+  const byKey = {};
+  pillars.forEach(function (p) { byKey[p.key] = p; });
+
+  let stage;
+  const allGreen = pillars.every(function (p) { return p.color === 'green'; });
+
+  const minPct = Math.min.apply(null, pillars.map(function (p) { return p.pct; }));
+  let weakestKey = null;
+  TIE_PRIORITY.forEach(function (key) {
+    if (weakestKey === null && byKey[key].pct === minPct) weakestKey = key;
+  });
+
+  if (allGreen) {
+    stage = 5;
+  } else if (
+    weakestKey === 'conversion' &&
+    byKey.conversion.color === 'orange' &&
+    (state.answers.q11 === 2 || state.answers.q11 === 3)
+  ) {
+    stage = 4;
+  } else {
+    stage = STAGE_MAP[weakestKey];
+  }
+
+  return { pillars: pillars, byKey: byKey, weakestKey: weakestKey, stage: stage, allGreen: allGreen };
+}
+
+function buildPayload(results) {
+  const answers = { q1: state.answers.q1 || '' };
+  ['q2', 'q3', 'q4', 'q5', 'q6', 'q7', 'q8', 'q9', 'q10', 'q11'].forEach(function (qid) {
+    const q = QUESTIONS.find(function (x) { return x.id === qid; });
+    answers[qid] = q.options[state.answers[qid]].points;
+  });
+  answers.q12 = state.answers.q12 || '';
+  answers.q13 = state.answers.q13 || '';
+
+  const q10 = QUESTIONS.find(function (x) { return x.id === 'q10'; });
+  const q11 = QUESTIONS.find(function (x) { return x.id === 'q11'; });
+
+  return {
+    name: state.lead.name,
+    handle: state.lead.handle,
+    email: state.lead.email,
+    followers: state.lead.followers,
+    lang: state.lang,
+    answers: answers,
+    q10_label: q10.options[state.answers.q10].en,
+    q11_label: q11.options[state.answers.q11].en,
+    scores: {
+      positioning: results.byKey.positioning.pct,
+      content: results.byKey.content.pct,
+      conversion: results.byKey.conversion.pct,
+      offer: results.byKey.offer.pct
+    },
+    colors: {
+      positioning: results.byKey.positioning.color,
+      content: results.byKey.content.color,
+      conversion: results.byKey.conversion.color,
+      offer: results.byKey.offer.color
+    },
+    weakest_pillar: results.byKey[results.weakestKey].name,
+    stage: results.stage,
+    stage_name: STAGES[results.stage].name[state.lang],
+    completed_at: new Date().toISOString(),
+    source_url: location.href
+  };
+}
+
+function postResults(results) {
+  if (state.posted || !RESULTS_ENDPOINT) return;
+  state.posted = true;
+  try {
+    fetch(RESULTS_ENDPOINT, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(buildPayload(results)),
+      keepalive: true
+    }).catch(function (err) { console.log('Results POST failed:', err); });
+  } catch (err) {
+    console.log('Results POST failed:', err);
+  }
+}
+
+const app = document.getElementById('app');
+const topbarRight = document.getElementById('topbar-right');
+const tickerSlot = document.getElementById('ticker-slot');
+
+function render() {
+  document.getElementById('footer-text').textContent = t('footer');
+  document.documentElement.lang = state.lang;
+  app.className = state.screen === 'landing' ? 'landing' : '';
+  if (state.screen === 'landing') {
+    topbarRight.innerHTML =
+      '<button type="button" class="lang-btn' + (state.lang === 'en' ? ' active' : '') + '" data-lang="en">EN</button>' +
+      '<button type="button" class="lang-btn' + (state.lang === 'nl' ? ' active' : '') + '" data-lang="nl">NL</button>';
+    topbarRight.querySelectorAll('.lang-btn').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        state.lang = btn.getAttribute('data-lang');
+        render();
+      });
+    });
+    renderTicker();
+  } else {
+    topbarRight.innerHTML = '';
+    tickerSlot.innerHTML = '';
+  }
+  if (state.screen === 'landing') renderLanding();
+  else if (state.screen === 'lead') renderLead();
+  else if (state.screen === 'question') renderQuestion();
+  else if (state.screen === 'interstitial') renderInterstitial();
+  else if (state.screen === 'results') renderResults();
+  window.scrollTo(0, 0);
+}
+
+function renderTicker() {
+  let items = '';
+  [1, 2, 3, 4, 5].forEach(function (n) {
+    items += '<span class="tick-item">Stage ' + n + ' · ' + STAGES[n].name[state.lang] + '</span><span class="tick-dot">&#9679;</span>';
+  });
+  tickerSlot.innerHTML = '<div class="ticker"><div class="ticker-track">' + items + items + '</div></div>';
+}
+
+function mockupHtml() {
+  const demoPcts = { positioning: 33, content: 56, conversion: 22, offer: 67 };
+  let stagesRows = '';
+  [1, 2, 3, 4, 5].forEach(function (n) {
+    stagesRows +=
+      '<div class="mock-stage' + (n === 1 ? ' active' : '') + '">' +
+        '<div class="mock-dot"></div>' +
+        '<span>Stage ' + n + ' · ' + STAGES[n].name[state.lang] + '</span>' +
+      '</div>';
+  });
+  let pillarRows = '';
+  PILLARS.forEach(function (p) {
+    const pct = demoPcts[p.key];
+    pillarRows +=
+      '<div class="mock-pillar">' +
+        '<div class="mock-pillar-name">' + p.name + '</div>' +
+        '<div class="mock-track"><div class="mock-fill b-' + colorFor(pct) + '" style="width:' + pct + '%"></div></div>' +
+      '</div>';
+  });
+  let stepRows = '';
+  [1, 2, 3].forEach(function (n) {
+    stepRows +=
+      '<div class="mock-step">' +
+        '<div class="mock-step-num">' + n + '</div>' +
+        '<div class="mock-skel' + (n === 2 ? ' short' : '') + '"></div>' +
+      '</div>';
+  });
+  return (
+    '<div class="mockup" aria-hidden="true">' +
+      '<div class="mock-card mock-side mock-left">' +
+        '<div class="mock-side-title">Pillars</div>' + pillarRows +
+      '</div>' +
+      '<div class="mock-card mock-center">' +
+        '<div class="mock-eyebrow">Profile to Profit Assessment</div>' +
+        '<div class="mock-title">' + t('mockTitle') + '</div>' +
+        '<div class="mock-serif">Aithos Marketing</div>' +
+        '<div class="mock-stages">' + stagesRows + '</div>' +
+      '</div>' +
+      '<div class="mock-card mock-side mock-right">' +
+        '<div class="mock-side-title">' + t('fixHeading').replace(': ', '') + '</div>' + stepRows +
+        '<div class="mock-pillar" style="margin-top:16px">' +
+          '<div class="mock-track"><div class="mock-fill b-orange" style="width:40%"></div></div>' +
+        '</div>' +
+      '</div>' +
+    '</div>'
+  );
+}
+
+function renderLanding() {
+  app.innerHTML =
+    '<div class="hero">' +
+      '<h1>' + t('landingHeadlineHtml') + '</h1>' +
+      '<p class="sub">' + t('landingSub') + '</p>' +
+    '</div>' +
+    mockupHtml() +
+    '<div class="start-card">' +
+      '<div class="start-peek"></div>' +
+      '<div class="progress-label">1 / 13</div>' +
+      '<div class="progress-track"><div class="progress-fill" style="width:7.7%"></div></div>' +
+      '<button type="button" class="btn" id="start-btn">' + t('landingBtn') + '</button>' +
+      '<p class="micro">' + t('landingMicro') + '</p>' +
+    '</div>';
+  document.getElementById('start-btn').addEventListener('click', function () {
+    state.screen = 'lead';
+    render();
+  });
+}
+
+function renderLead() {
+  app.innerHTML =
+    '<div class="panel">' +
+    '<h2>' + t('leadHeading') + '</h2>' +
+    '<form id="lead-form" novalidate>' +
+      '<div class="field">' +
+        '<label for="lead-name">' + t('leadName') + '</label>' +
+        '<input id="lead-name" type="text" autocomplete="given-name" value="' + esc(state.lead.name) + '">' +
+      '</div>' +
+      '<div class="field">' +
+        '<label for="lead-handle">' + t('leadHandle') + '</label>' +
+        '<div class="handle-wrap"><span class="at">@</span>' +
+        '<input id="lead-handle" type="text" autocomplete="off" autocapitalize="none" value="' + esc(state.lead.handle) + '"></div>' +
+      '</div>' +
+      '<div class="field">' +
+        '<label for="lead-followers">' + t('leadFollowers') + '</label>' +
+        '<input id="lead-followers" type="text" inputmode="numeric" autocomplete="off" value="' + esc(state.lead.followers) + '">' +
+      '</div>' +
+      '<div class="field"><button type="submit" class="btn">' + t('leadBtn') + '</button></div>' +
+    '</form>' +
+    '</div>';
+  document.getElementById('lead-form').addEventListener('submit', function (e) {
+    e.preventDefault();
+    const nameEl = document.getElementById('lead-name');
+    const handleEl = document.getElementById('lead-handle');
+    const followersEl = document.getElementById('lead-followers');
+    const name = nameEl.value.trim();
+    const handle = handleEl.value.trim().replace(/^@+/, '');
+    const followers = followersEl.value.trim();
+    let valid = true;
+    nameEl.classList.toggle('invalid', !name);
+    handleEl.classList.toggle('invalid', !handle);
+    followersEl.classList.toggle('invalid', !followers);
+    if (!name || !handle || !followers) valid = false;
+    if (!valid) return;
+    state.lead.name = name;
+    state.lead.handle = handle;
+    state.lead.followers = followers;
+    state.screen = 'question';
+    state.qIndex = 0;
+    render();
+  });
+}
+
+function renderQuestion() {
+  const q = QUESTIONS[state.qIndex];
+  const num = state.qIndex + 1;
+  let html =
+    '<div class="q-top">' +
+      '<button type="button" class="back-btn" id="back-btn" aria-label="Back">&#8592;</button>' +
+      '<div class="progress-wrap">' +
+        '<div class="progress-label">' + num + ' / 13</div>' +
+        '<div class="progress-track"><div class="progress-fill" style="width:' + (num / 13 * 100) + '%"></div></div>' +
+      '</div>' +
+    '</div>' +
+    '<div class="panel">' +
+    '<h2>' + q.text[state.lang] + '</h2>';
+
+  if (q.type === 'mc') {
+    html += '<div class="options">';
+    q.options.forEach(function (opt, i) {
+      const sel = state.answers[q.id] === i ? ' selected' : '';
+      html += '<button type="button" class="option' + sel + '" data-i="' + i + '">' + opt[state.lang] + '</button>';
+    });
+    html += '</div>';
+  } else {
+    html +=
+      '<textarea class="open-area" id="open-input">' + esc(state.answers[q.id] || '') + '</textarea>' +
+      '<div class="field"><button type="button" class="btn" id="continue-btn">' + t('continueBtn') + '</button></div>';
+  }
+  html += '</div>';
+  app.innerHTML = html;
+
+  document.getElementById('back-btn').addEventListener('click', function () {
+    if (state.advancing) return;
+    if (state.qIndex === 0) {
+      state.screen = 'lead';
+    } else {
+      state.qIndex -= 1;
+    }
+    render();
+  });
+
+  if (q.type === 'mc') {
+    app.querySelectorAll('.option').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        if (state.advancing) return;
+        state.advancing = true;
+        state.answers[q.id] = parseInt(btn.getAttribute('data-i'), 10);
+        app.querySelectorAll('.option').forEach(function (b) { b.classList.remove('selected'); });
+        btn.classList.add('selected');
+        setTimeout(function () {
+          state.advancing = false;
+          advance();
+        }, 250);
+      });
+    });
+  } else {
+    document.getElementById('continue-btn').addEventListener('click', function () {
+      state.answers[q.id] = document.getElementById('open-input').value.trim();
+      advance();
+    });
+  }
+}
+
+function advance() {
+  if (state.qIndex < QUESTIONS.length - 1) {
+    state.qIndex += 1;
+    render();
+  } else {
+    state.screen = 'interstitial';
+    render();
+    setTimeout(function () {
+      state.screen = 'results';
+      render();
+    }, 2000);
+  }
+}
+
+function renderInterstitial() {
+  app.innerHTML =
+    '<div class="interstitial">' +
+      '<div class="spinner"></div>' +
+      '<h2>' + t('analyzing') + '</h2>' +
+    '</div>';
+}
+
+function renderResults() {
+  const results = computeResults();
+  const stage = STAGES[results.stage];
+
+  let html =
+    '<div class="panel">' +
+    '<h1>' + esc(state.lead.name) + t('greeting') + '</h1>' +
+    '<p class="greet-sub">' + t('greetingSub') + '</p>' +
+    '<div class="stage-card">' +
+      '<h2>' + stage.name[state.lang] + '</h2>' +
+      '<p>' + stage.diagnosis[state.lang] + '</p>' +
+    '</div>' +
+    '<div class="pillars">';
+
+  results.pillars.forEach(function (p) {
+    html +=
+      '<div class="pillar">' +
+        '<div class="pillar-head">' +
+          '<span class="pillar-name">' + p.name + '</span>' +
+          '<span class="pillar-pct c-' + p.color + '">' + p.pct + '%</span>' +
+        '</div>' +
+        '<div class="bar-track"><div class="bar-fill b-' + p.color + '" data-pct="' + p.pct + '"></div></div>' +
+        '<p class="verdict">' + VERDICTS[p.key][p.color][state.lang] + '</p>' +
+      '</div>';
+  });
+  html += '</div>';
+
+  if (results.stage !== 5) {
+    const plan = PLANS[results.weakestKey][state.lang];
+    html +=
+      '<div class="fix-section">' +
+        '<h2>' + t('fixHeading') + results.byKey[results.weakestKey].name + '</h2>' +
+        '<p class="fix-intro">' + t('fixIntro') + '</p>' +
+        '<ol class="fix-list">';
+    plan.steps.forEach(function (step) { html += '<li>' + step + '</li>'; });
+    html += '</ol>';
+    if (plan.outro) html += '<p class="fix-outro">' + plan.outro + '</p>';
+    html += '</div>';
+  }
+
+  html +=
+    '<div class="benchmark">' + t('benchmark') + '</div>' +
+    '<div class="outro-block">' + t('outroHtml') + '</div>' +
+    '<button type="button" class="btn btn-outline no-print" id="download-btn">' + t('downloadBtn') + '</button>' +
+    '</div>';
+
+  app.innerHTML = html;
+
+  document.getElementById('download-btn').addEventListener('click', function () {
+    const prevTitle = document.title;
+    document.title = 'Profile to Profit Assessment - ' + state.lead.name;
+    window.addEventListener('afterprint', function restore() {
+      document.title = prevTitle;
+      window.removeEventListener('afterprint', restore);
+    });
+    window.print();
+  });
+
+  requestAnimationFrame(function () {
+    requestAnimationFrame(function () {
+      app.querySelectorAll('.bar-fill').forEach(function (bar) {
+        bar.style.width = bar.getAttribute('data-pct') + '%';
+      });
+    });
+  });
+
+  postResults(results);
+}
+
+document.getElementById('logo').src = LOGO_SRC;
+document.getElementById('footer-logo').src = LOGO_SRC;
+render();
+</script>
+</body>
+</html>
