@@ -24,7 +24,10 @@
   body {
     font-family: 'Inter', Arial, Helvetica, sans-serif;
     background: var(--bg);
-    background-image: radial-gradient(ellipse 80% 60% at 50% 0%, #ffffff 0%, rgba(255,255,255,0) 70%);
+    background-image:
+      radial-gradient(rgba(20,20,20,0.08) 1.2px, transparent 1.2px),
+      radial-gradient(ellipse 80% 60% at 50% 0%, #ffffff 0%, rgba(255,255,255,0) 70%);
+    background-size: 22px 22px, auto;
     color: var(--text);
     display: flex;
     flex-direction: column;
@@ -67,14 +70,59 @@
   footer {
     color: var(--muted);
     font-size: 13px;
-    text-align: center;
-    padding: 26px 16px 30px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 10px;
+    padding: 44px 20px 28px;
+    border-top: 1px solid var(--line);
+    background: rgba(255,255,255,0.55);
   }
-  .footer-logo { height: 20px; opacity: 0.85; }
+  .footer-top {
+    max-width: 1100px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+  }
+  .footer-logo { height: 40px; }
+  .footer-meta {
+    max-width: 1100px;
+    margin: 22px auto 0;
+    padding-top: 16px;
+    border-top: 1px solid var(--line);
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    font-size: 12px;
+    color: var(--muted);
+  }
+  .footer-brand {
+    font-weight: 800;
+    font-size: clamp(64px, 13vw, 170px);
+    line-height: 0.95;
+    letter-spacing: -0.03em;
+    text-transform: uppercase;
+    color: var(--black);
+    text-align: center;
+    margin-top: 28px;
+    margin-bottom: -0.12em;
+    overflow: hidden;
+  }
+  .footer-brand-c { color: var(--orange); font-size: 0.32em; vertical-align: 0.9em; }
+  @media (max-width: 680px) {
+    .footer-top { flex-direction: column; gap: 16px; }
+    .footer-meta { flex-direction: column; align-items: center; text-align: center; gap: 6px; }
+  }
+  .footer-nav { display: flex; flex-wrap: wrap; gap: 8px 26px; }
+  .footer-nav a {
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    cursor: pointer;
+  }
+  .footer-nav a:hover { color: var(--orange); }
+  .footer-nav:empty { display: none; }
   h1 { font-size: 28px; line-height: 1.25; color: var(--black); font-weight: 800; }
   h2 { font-size: 22px; line-height: 1.3; color: var(--black); font-weight: 700; }
   .panel {
@@ -284,6 +332,7 @@
   .tick-dot { color: var(--orange); font-size: 13px; }
   @media (max-width: 680px) {
     .topbar-title { display: none; }
+    .testi-video-grid { grid-template-columns: repeat(2, 1fr); }
     .mockup {
       transform: scale(0.58);
       transform-origin: top center;
@@ -401,8 +450,47 @@
   .verdict { color: var(--text); font-size: 14.5px; margin-top: 8px; }
   .fix-section { margin-top: 34px; }
   .fix-intro { margin-top: 10px; }
-  .fix-list { margin-top: 14px; padding-left: 22px; display: flex; flex-direction: column; gap: 10px; }
-  .fix-outro { margin-top: 12px; }
+  .fix-steps { margin-top: 18px; display: flex; flex-direction: column; gap: 14px; }
+  .fix-step {
+    background: var(--card);
+    border-radius: 12px;
+    padding: 18px 17px;
+  }
+  .fix-step-top { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+  .fix-step-num {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: var(--orange);
+    color: #ffffff;
+    font-weight: 800;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .fix-step-title { font-weight: 800; color: var(--black); font-size: 16px; flex: 1; min-width: 180px; }
+  .fix-step-meta {
+    font-size: 10.5px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--orange);
+    white-space: nowrap;
+  }
+  .fix-step-body { margin-top: 10px; font-size: 14.5px; }
+  .fix-example {
+    margin-top: 10px;
+    border-left: 3px solid var(--orange);
+    padding: 9px 13px;
+    font-style: italic;
+    font-size: 14px;
+    color: #55534f;
+    background: #ffffff;
+    border-radius: 0 8px 8px 0;
+  }
+  .fix-outro { margin-top: 14px; font-weight: 600; }
   .benchmark {
     margin-top: 30px;
     background: var(--card);
@@ -430,14 +518,138 @@
     text-decoration-thickness: 2px;
     text-underline-offset: 6px;
   }
-  .btn-outline {
-    margin-top: 16px;
-    background: none;
-    color: var(--black);
-    border: 2px solid var(--black);
-    transition: background 0.15s ease, color 0.15s ease;
+  .vsl { max-width: 680px; margin: 34px auto 0; }
+  .video-frame {
+    aspect-ratio: 16 / 9;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 24px 50px rgba(20,20,20,0.16);
+    background: var(--black);
   }
-  .btn-outline:hover { background: var(--black); color: #ffffff; }
+  .video-frame iframe { width: 100%; height: 100%; border: 0; display: block; }
+  .wistia-frame { aspect-ratio: auto; }
+  .wistia-frame wistia-player { display: block; width: 100%; }
+  .eyebrow {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--orange);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 14px;
+  }
+  .eyebrow::before, .eyebrow::after {
+    content: "";
+    height: 1px;
+    width: 26px;
+    background: var(--orange);
+    opacity: 0.5;
+  }
+  .landing-section { max-width: 760px; margin: 72px auto 0; text-align: center; }
+  .landing-section h2 { font-size: 26px; }
+  .testi-video-grid {
+    margin-top: 26px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 16px;
+  }
+  .testi-video-frame {
+    aspect-ratio: 9 / 16;
+    border-radius: 14px;
+    overflow: hidden;
+    background: var(--black);
+    box-shadow: 0 18px 40px rgba(20,20,20,0.14);
+  }
+  .testi-video-frame iframe, .testi-video-frame video {
+    width: 100%;
+    height: 100%;
+    border: 0;
+    display: block;
+    object-fit: cover;
+  }
+  .testi-video-caption { text-align: left; margin-top: 10px; }
+  .testi-video-caption .testi-name { font-size: 14px; }
+  .testi-video-caption .testi-line { font-size: 13.5px; margin-top: 2px; }
+  .testi-grid {
+    margin-top: 22px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 14px;
+  }
+  .testi-card {
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-left: 4px solid var(--orange);
+    border-radius: 12px;
+    padding: 18px 16px;
+    text-align: left;
+  }
+  .testi-name { font-weight: 800; color: var(--black); font-size: 15px; }
+  .testi-line { margin-top: 4px; font-size: 15px; color: #55534f; }
+  .faq-list {
+    margin-top: 22px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    max-width: 680px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .faq-acc {
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    text-align: left;
+  }
+  .faq-acc summary {
+    cursor: pointer;
+    padding: 16px 18px;
+    font-weight: 700;
+    font-size: 15.5px;
+    color: var(--black);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 14px;
+    list-style: none;
+  }
+  .faq-acc summary::-webkit-details-marker { display: none; }
+  .faq-ind {
+    color: var(--orange);
+    font-size: 22px;
+    font-weight: 400;
+    line-height: 1;
+    flex-shrink: 0;
+    transition: transform 0.2s ease;
+  }
+  .faq-acc[open] .faq-ind { transform: rotate(45deg); }
+  .faq-a {
+    padding: 0 18px 17px;
+    font-size: 14.5px;
+    color: #3f3d3a;
+  }
+  .landing-bottom-cta { max-width: 560px; margin: 52px auto 0; }
+  .proof-lines { margin-top: 26px; text-align: center; }
+  .proof-line { font-size: 14.5px; color: #55534f; margin-top: 6px; }
+  .proof-name { font-weight: 800; color: var(--black); }
+  .cta-block { margin-top: 30px; text-align: center; }
+  .cta-block p { margin-top: 12px; text-align: left; }
+  .cta-block .btn { margin-top: 20px; }
+  .btn-ig { display: inline-flex; align-items: center; justify-content: center; gap: 10px; width: 100%; }
+  .ig-ic { flex-shrink: 0; }
+  .video-placeholder { display: flex; align-items: center; justify-content: center; }
+  .cta-mini { margin-top: 30px; }
+  .results-testi { margin-top: 38px; text-align: center; }
+  .results-testi h2 { font-size: 24px; }
+  .results-faq { margin-top: 42px; text-align: center; }
+  .results-faq h2 { font-size: 24px; }
+  .results-faq .faq-list { margin-top: 22px; }
+  .testi-video-grid.compact { grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; }
+  .testi-video-grid.compact .testi-name { font-size: 13px; }
+  .testi-video-grid.compact .testi-line { font-size: 12.5px; }
   .c-red { color: var(--red); }
   .c-orange { color: var(--orange); }
   .c-green { color: var(--green); }
@@ -455,7 +667,7 @@
     .topbar { background: #ffffff; backdrop-filter: none; }
     main { max-width: 100%; padding: 16px 0 0; }
     .panel { border: none; box-shadow: none; padding: 0; }
-    .stage-card, .pillar, .benchmark, .outro-block, .fix-list li { break-inside: avoid; }
+    .stage-card, .pillar, .benchmark, .outro-block, .fix-step { break-inside: avoid; }
     .fix-section { break-before: auto; }
     .bar-fill { transition: none; }
   }
@@ -472,11 +684,58 @@
 <main id="app"></main>
 <div id="ticker-slot"></div>
 <footer>
-  <img class="footer-logo" id="footer-logo" alt="Aithos" src="">
-  <div id="footer-text"></div>
+  <div class="footer-top">
+    <img class="footer-logo" id="footer-logo" alt="Aithos" src="">
+    <nav class="footer-nav" id="footer-nav"></nav>
+  </div>
+  <div class="footer-meta">
+    <div id="footer-text"></div>
+    <div>&copy; 2026 Aithos Marketing. All rights reserved.</div>
+  </div>
+  <div class="footer-brand" aria-hidden="true">Aithos<span class="footer-brand-c">&copy;</span></div>
 </footer>
 <script>
 const RESULTS_ENDPOINT = 'https://aithos.app.n8n.cloud/webhook/aithos-assessment';
+const DM_URL = 'https://ig.me/m/vonk.max?ref=assessment';
+// VSL: Wistia media id (takes precedence) or YouTube video id. Empty both = placeholder frame.
+var VSL_WISTIA_ID = 'rendu38p4f';
+var VSL_WISTIA_ASPECT = 1.6494845360824741;
+var VSL_YOUTUBE_ID = '';
+// Meta Pixel: paste the Pixel ID to enable PageView / Lead / AssessmentComplete tracking.
+var META_PIXEL_ID = '';
+// FAQ accordion. Each item: { q: { en, nl }, a: { en, nl } }.
+var FAQ_ITEMS = [
+  { q: { nl: "Hoe accuraat is deze breakdown?", en: "How accurate is this breakdown?" },
+    a: { nl: "Zo accuraat als jouw antwoorden eerlijk zijn. De scoring erachter is dezelfde vier-pijler analyse die ik gebruik als ik een profiel van mijn klanten zelf bekijk: positionering, content, conversie en aanbod. Dertien vragen zijn genoeg om te vinden welke pijler lekt, en dat is precies waar deze assessment voor bestaat: je op het juiste probleem richten. Wat hij niet kan weten zijn de details van jouw niche en jouw situatie. Dat kunnen we bespreken op WhatsApp en wellicht op een call.",
+         en: "As accurate as your answers are honest. The scoring behind it is the same four-pillar analysis I use when I look at a client's profile myself: positioning, content, conversion and offer. Thirteen questions are enough to find which pillar is leaking, and that is exactly what this assessment is for: pointing you at the right problem. What it cannot know are the details of your niche and your situation. We can discuss that on WhatsApp and maybe on a call." } },
+  { q: { nl: "Wat gebeurt er nadat ik je een DM stuur?", en: "What happens after I send you a DM?" },
+    a: { nl: "Gewoon een gesprek, meer niet. Wees niet bang, ik ga niet mijn sales magie op je gebruiken, die bewaar ik alleen voor hele speciale momenten ;) Haha nee ff zonder gekkigheid, ik ga je gewoon een paar vragen stellen over je breakdown, vooral: welk deel voelde het meest als jouw situatie? Denk ik dat ik je kan helpen, dan stel ik voor om je breakdown samen door te lopen in een korte call van 20 tot 30 minuten. Denk ik dat ik je niet kan helpen, dan stuur ik je een paar van de beste assets die ik ken om je toch te helpen.",
+         en: "Just a conversation, nothing more. Don't worry, I won't use my sales magic on you, I only save that for very special moments ;) Haha no, all jokes aside, I will simply ask you a couple of questions about your breakdown, mainly: which part felt most like your situation? If I think I can help you, I will offer to walk through your breakdown together in a short call of 20 to 30 minutes. If I think I cannot help you, I will send you a few of the best assets I know to help you anyway." } },
+  { q: { nl: "Wat als ik nu nauwelijks content post?", en: "What if I barely post content right now?" },
+    a: { nl: "Dan sta je er misschien wel beter voor dan de mensen die wel elke dag posten. Meer posten is bijna nooit stap één. Als je positionering onduidelijk is of er geen route is van aandacht naar een gesprek, betekent meer content alleen maar meer moeite die weglekt. De assessment scoort je op alle vier de pijlers, hoe veel of hoe weinig je ook post. En als content echt je zwakste punt is, begint je plan met een ritme dat je ook echt volhoudt. Niet per se dagelijks posten dus.",
+         en: "Then you might be in a better position than the people who do post every day. Posting more is almost never step one. If your positioning is unclear or there is no path from attention to a conversation, more content just means more effort leaking away. The assessment scores you on all four pillars, however much or little you post. And if content really is your weakest point, your plan starts with a rhythm you can actually hold. So not necessarily daily posting." } },
+  { q: { nl: "Heb ik veel volgers nodig om dit te laten werken?", en: "Do I need a big following for this to work?" },
+    a: { nl: "Nee. Sterker nog: een klein publiek van de juiste mensen verslaat vijftigduizend van de verkeerde, elke keer weer. Klanten komen niet uit je volgersaantal, maar uit een duidelijk profiel, content met een taak en een systeem dat interesse omzet in gesprekken. Duizend volgers waarvan er honderd je ideale klant zijn, is een business. De assessment vraagt je volgersaantal als context, niet als oordeel.",
+         en: "No. In fact: a small audience of the right people beats fifty thousand of the wrong ones, every single time. Clients do not come from your follower count, they come from a clear profile, content with a job, and a system that turns interest into conversations. A thousand followers where a hundred are your ideal clients is a business. The assessment asks for your follower count as context, not as a verdict." } },
+  { q: { nl: "Hoe is dit anders dan andere marketing partners?", en: "How is this different from other marketing partners?" },
+    a: { nl: "De meeste marketing partners verkopen je content: meer volume, betere edits, mooiere posts. Prima, maar content is één pijler van de vier. Als je positionering onduidelijk is of niks de aandacht opvangt die je posts creëren, maakt betere editing het lek alleen maar mooier. Ik werk aan het hele systeem: voor wie je gepositioneerd bent, wat je content moet doen, hoe interesse een gesprek wordt in de DM, en hoe je aanbod verkocht wordt. En het tweede verschil zie je nu: ik laat je mijn diagnose gratis zien, voordat je me iets betaald hebt.",
+         en: "Most marketing partners sell you content: more volume, better edits, prettier posts. Fine, but content is one pillar out of four. If your positioning is unclear or nothing catches the attention your posts create, better editing just makes the leak look nicer. I work on the whole system: who you are positioned for, what your content is supposed to do, how interest becomes a conversation in the DMs, and how your offer gets sold. And the second difference is right in front of you: I show you my diagnosis for free, before you have paid me anything." } },
+  { q: { nl: "Hoeveel tijd kost dit per week?", en: "How much time does this take per week?" },
+    a: { nl: "Eerlijk antwoord: minder dan wat je nu doet, want nu besteed je waarschijnlijk veel tijd aan gokken. Het fix-first plan uit de assessment is gemaakt om deze week uit te voeren: de meeste stappen kosten eenmalig minder dan een uur, plus kleine dagelijkse gewoontes zoals een kwartier in je DMs. Dat is de gratis versie. Werken we samen, dan bouwen wij de machine en gaan jouw uren naar het enige dat alleen jij kunt: je klanten coachen en voor de camera staan.",
+         en: "Honest answer: less than what you are doing now, because right now you are probably spending a lot of time guessing. The fix-first plan from the assessment is built to be executed this week: most steps take under an hour one time, plus small daily habits like fifteen minutes in your DMs. That is the free version. If we end up working together, we build the machine and your hours go into the one thing only you can do: coaching your clients and being in front of the camera." } }
+];
+var TESTIMONIALS = [
+  { name: 'Niek', en: 'from €1K to €13K per month in 4 weeks', nl: 'van €1K naar €13K per maand in 4 weken' },
+  { name: 'Jeroen', en: 'from 5K to 12K followers in 2 months', nl: 'van 5K naar 12K volgers in 2 maanden' }
+];
+// Vertical (9:16) testimonial videos. Supported: { vimeo: 'id' }, { yt: 'youtubeVideoId' }, { mp4: 'url' },
+// each with name/en/nl caption fields. When this has items, the video grid replaces the text-only cards.
+var TESTIMONIAL_VIDEOS = [
+  { vimeo: '1208189915', name: 'Niek Beerens', en: 'AI Agency Founder', nl: 'AI Agency Founder' },
+  { vimeo: '1208189918', name: 'Jeroen Bentvelzen', en: 'Personal Branding Consultant', nl: 'Personal Branding Consultant' },
+  { vimeo: '1208189917', name: 'Mason Jongejan', en: 'SaaS Founder', nl: 'SaaS-Founder' },
+  { vimeo: '1208190084', name: 'Wijnand Lamboo', en: "Men's Self-Improvement Coach", nl: 'Self-Improvement Coach voor mannen' }
+];
 const LOGO_SRC = 'data:image/webp;base64,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';
 
 const COPY = {
@@ -500,8 +759,14 @@ const COPY = {
     fixIntro: "Do this first. It is free, it is yours, and it works without me.",
     benchmark: "Accounts your size that fix this typically start seeing inbound DMs within weeks, profile visits that convert, and calls with strangers instead of only referrals. Not overnight, but structurally.",
     outroHtml: "You now have the information. What will separate you from your competitors is <span class=\"accent\">actually implementing it.</span>",
-    downloadBtn: "Download as PDF",
-    footer: "Aithos Marketing · Precision over everything."
+    ctaHeading: "Want to go through this together?",
+    ctaText: "This plan is yours either way. If you want me to walk you through it and show you exactly what I would do in your situation, send me a DM and we will pick it up from there.",
+    ctaBtn: "DM me on Instagram",
+    testiHeading: "What Our Clients Say",
+    testiEyebrow: "The proof",
+    faqHeading: "FAQ",
+    faqEyebrow: "Questions",
+    footer: "Precision over Everything."
   },
   nl: {
     landingHeadline: "Ontdek waarom je content je geen klanten oplevert.",
@@ -523,9 +788,33 @@ const COPY = {
     fixIntro: "Doe dit eerst. Het is gratis, het is van jou, en het werkt ook zonder mij.",
     benchmark: "Accounts van jouw formaat die dit fixen, zien meestal binnen weken de eerste inbound DMs, profielbezoeken die converteren en calls met vreemden in plaats van alleen referrals. Niet van de ene op de andere dag, maar structureel.",
     outroHtml: "Je hebt nu alle informatie. Wat jou gaat onderscheiden van je concurrenten, is <span class=\"accent\">het ook echt implementeren.</span>",
-    downloadBtn: "Download als PDF",
-    footer: "Aithos Marketing · Precision over everything."
+    ctaHeading: "Zullen we hem samen doorlopen?",
+    ctaText: "Dit plan is sowieso van jou. Wil je dat ik hem met je doorloop en je precies laat zien wat ik in jouw situatie zou doen, stuur me dan een DM, dan pakken we het daar op.",
+    ctaBtn: "Stuur me een DM op Instagram",
+    testiHeading: "Wat onze klanten zeggen",
+    testiEyebrow: "Het bewijs",
+    faqHeading: "FAQ",
+    faqEyebrow: "Vragen",
+    footer: "Precision over Everything."
   }
+};
+
+// Per-CEP landing headlines. Ads link with ?cep=1..7 (combinable with &lang=nl); no cep = default headline.
+const CEP_HEADLINES = {
+  1: { en: "Find out why your views are fine but <span class=\"accent\">your inbox stays silent.</span>",
+       nl: "Ontdek waarom je views prima zijn maar <span class=\"accent\">je inbox stil blijft.</span>" },
+  2: { en: "Find out why your business still runs on referrals, and <span class=\"accent\">the first thing to fix.</span>",
+       nl: "Ontdek waarom je business nog op referrals draait, en <span class=\"accent\">wat je als eerste fixt.</span>" },
+  3: { en: "Find out what your content should be doing, <span class=\"accent\">instead of guessing every week.</span>",
+       nl: "Ontdek wat je content zou moeten doen, <span class=\"accent\">in plaats van elke week gokken.</span>" },
+  4: { en: "Find out what coaches with worse results <span class=\"accent\">know that you don't.</span>",
+       nl: "Ontdek wat coaches met slechtere resultaten <span class=\"accent\">wél doorhebben.</span>" },
+  5: { en: "Find out why your followers grow but <span class=\"accent\">your revenue doesn't.</span>",
+       nl: "Ontdek waarom je volgers groeien maar <span class=\"accent\">je omzet niet.</span>" },
+  6: { en: "Find out why a stranger can't tell <span class=\"accent\">what you actually do.</span>",
+       nl: "Ontdek waarom een vreemde niet ziet <span class=\"accent\">wat jij eigenlijk doet.</span>" },
+  7: { en: "Find out why every good month <span class=\"accent\">still starts back at zero.</span>",
+       nl: "Ontdek waarom elke goede maand <span class=\"accent\">weer op nul begint.</span>" }
 };
 
 const QUESTIONS = [
@@ -687,56 +976,89 @@ const VERDICTS = {
 const PLANS = {
   positioning: {
     en: { steps: [
-      "Rewrite your bio to the formula: who you help, with what result, in what timeframe, plus one clear next step.",
-      "Create a results highlight: your best client outcomes, screenshots and numbers, pinned first.",
-      "Pin your strongest converting post, not your most viral one." ],
+      { title: "Rewrite your bio with the who-what-when formula", meta: "About 30 minutes",
+        body: "Line one: who you help and the result you deliver, with a timeframe. Line two: your proof or mechanism, one sentence that shows why you. Line three: one clear next step, a single CTA. Cut job titles, buzzwords and mission statements: a stranger gives your profile five seconds and only acts on clarity.",
+        example: "Example: \"I help online coaches get 3 to 5 inbound clients per month from Instagram. 40+ coaches ahead of you. DM me SCAN for a free breakdown.\"" },
+      { title: "Build a results highlight that sells while you sleep", meta: "About 45 minutes",
+        body: "Collect your strongest client outcomes: DM screenshots, revenue numbers, before and afters. One result per slide, each with a name, a number and a timeframe. Put the strongest one first and pin the highlight in the first position with a name buyers scan for, like Results or Client Wins. No client results yet? Use your own numbers and your own transformation, documented honestly." },
+      { title: "Pin for conversion, not for ego", meta: "About 20 minutes",
+        body: "Your pinned posts are your shop window. Pin the post that made people send you a DM, not the one with the most views. The strongest trio: one authority post that breaks down a result, one story post that explains why you do this, and one conversion post that ends in a clear call to action. Review them once a month." } ],
       outro: "All three together take under two hours and change what every future visitor sees." },
     nl: { steps: [
-      "Herschrijf je bio volgens de formule: wie je helpt, met welk resultaat, in welke termijn, plus één duidelijke volgende stap.",
-      "Maak een resultaten-highlight: je beste klantresultaten, screenshots en cijfers, vooraan vastgezet.",
-      "Zet je sterkst converterende post vast, niet je meest virale." ],
+      { title: "Herschrijf je bio met de wie-wat-wanneer formule", meta: "Ongeveer 30 minuten",
+        body: "Regel één: wie je helpt en welk resultaat je levert, met een termijn. Regel twee: je bewijs of mechanisme, één zin die laat zien waarom jij. Regel drie: één duidelijke volgende stap, één CTA. Schrap functietitels, buzzwords en missiestatements: een vreemde geeft je profiel vijf seconden en komt alleen in actie bij duidelijkheid.",
+        example: "Voorbeeld: \"Ik help online coaches aan 3 tot 5 inbound klanten per maand via Instagram. 40+ coaches gingen je voor. Stuur me SCAN voor een gratis breakdown.\"" },
+      { title: "Bouw een resultaten-highlight die verkoopt terwijl jij slaapt", meta: "Ongeveer 45 minuten",
+        body: "Verzamel je sterkste klantresultaten: DM-screenshots, omzetcijfers, before en afters. Eén resultaat per slide, elk met een naam, een cijfer en een termijn. Zet de sterkste vooraan en pin de highlight op de eerste plek, met een naam waar kopers op scannen, zoals Resultaten of Client Wins. Nog geen klantresultaten? Gebruik je eigen cijfers en je eigen transformatie, eerlijk gedocumenteerd." },
+      { title: "Pin voor conversie, niet voor je ego", meta: "Ongeveer 20 minuten",
+        body: "Je vastgezette posts zijn je etalage. Pin de post waardoor mensen je een DM stuurden, niet de post met de meeste views. Het sterkste trio: één autoriteitspost die een resultaat ontleedt, één verhaalpost die uitlegt waarom jij dit doet, en één conversiepost die eindigt in een duidelijke call to action. Check ze één keer per maand." } ],
       outro: "Alle drie samen kosten nog geen twee uur en veranderen wat elke toekomstige bezoeker ziet." }
   },
   content: {
     en: { steps: [
-      "Pick a posting rhythm you can hold for 90 days, even if it is only 3 per week, and hold it.",
-      "Give every post one job before you make it: attract strangers, build trust, or convert. If you cannot name the job, do not post it.",
-      "Split your week: most posts for reach and trust, one per week that directly addresses buying-ready followers." ],
-      outro: "" },
+      { title: "Pick a rhythm you can hold for 90 days", meta: "Decide today",
+        body: "Choose the posting frequency you can hit in your worst week, not your best. Three posts per week held for 90 days beats seven per week that collapses after twelve days. Put the slots in your calendar like client appointments: the algorithm rewards predictability, and so does your audience." },
+      { title: "Give every post one job before you make it", meta: "Every post",
+        body: "Every post gets one of three jobs: attract strangers, build trust, or convert followers into conversations. Write the job in one word at the top of your draft before you create anything. If you cannot name the job, you are making content for the algorithm instead of your business, and it will compound at zero.",
+        example: "Attract: a broad pain or desire your niche recognizes instantly. Trust: your process, your results, your opinions. Convert: speaks to people ready to buy and tells them exactly what to do next." },
+      { title: "Split your week deliberately", meta: "1 post per week",
+        body: "Most of your posts go to reach and trust. Exactly one post per week speaks directly to buying-ready followers: handle an objection, break down a client case, or show the cost of waiting, and end it with one specific next step. One is enough. More makes your feed feel like a pitch, fewer leaves money invisible." } ],
+      outro: "Hold this for 90 days and content stops being a guess and becomes a machine." },
     nl: { steps: [
-      "Kies een postritme dat je 90 dagen kunt volhouden, al is het maar 3 per week, en houd het vol.",
-      "Geef elke post één taak voordat je hem maakt: vreemden aantrekken, vertrouwen bouwen of converteren. Kun je de taak niet benoemen, post hem dan niet.",
-      "Verdeel je week: de meeste posts voor bereik en vertrouwen, één per week die zich direct richt op volgers die klaar zijn om te kopen." ],
-      outro: "" }
+      { title: "Kies een ritme dat je 90 dagen volhoudt", meta: "Beslis vandaag",
+        body: "Kies de frequentie die je in je slechtste week haalt, niet in je beste. Drie posts per week die je 90 dagen volhoudt verslaat zeven per week die na twaalf dagen instort. Zet de momenten in je agenda als klantafspraken: het algoritme beloont voorspelbaarheid, en je publiek ook." },
+      { title: "Geef elke post één taak voordat je hem maakt", meta: "Elke post",
+        body: "Elke post krijgt één van drie taken: vreemden aantrekken, vertrouwen bouwen, of volgers omzetten in gesprekken. Schrijf de taak in één woord boven je concept voordat je iets maakt. Kun je de taak niet benoemen, dan maak je content voor het algoritme in plaats van voor je business, en stapelt het op naar nul.",
+        example: "Aantrekken: een brede pijn of verlangen die je niche direct herkent. Vertrouwen: je proces, je resultaten, je meningen. Converteren: spreekt de mensen aan die klaar zijn om te kopen en vertelt ze precies wat de volgende stap is." },
+      { title: "Verdeel je week bewust", meta: "1 post per week",
+        body: "De meeste posts gaan naar bereik en vertrouwen. Precies één post per week spreekt direct je koopklare volgers aan: behandel een bezwaar, ontleed een klantcase, of laat de kosten van wachten zien, en sluit af met één specifieke volgende stap. Eén is genoeg. Meer maakt je feed een pitch, minder laat geld onzichtbaar liggen." } ],
+      outro: "Houd dit 90 dagen vol en content stopt met gokken zijn en wordt een machine." }
   },
   conversion: {
     en: { steps: [
-      "End every post with one specific next step: comment a keyword, send a DM, watch the pinned video. One, not three.",
-      "Decide your DM flow once and write it down: what you say when someone shows interest, in what order, ending where.",
-      "Reply to every new follower and every story reaction with a genuine question. That habit alone creates conversations from attention you already have." ],
-      outro: "" },
+      { title: "End every post with one specific next step", meta: "Every post",
+        body: "Comment a keyword, send a DM, watch the pinned video. One, not three: every extra option cuts action. Rotate the destination per post, but never stack them. The keyword comment is the strongest starter, because it gives you permission to open the DM conversation yourself.",
+        example: "Example CTA: \"Want the exact steps? Comment PLAN and I will send them to you.\"" },
+      { title: "Script your DM flow once and write it down", meta: "About 1 hour, once",
+        body: "Decide exactly what happens when someone shows interest: your opening question, the two or three qualifying questions that follow, and where the conversation ends, a call, a voice note or an offer. Save the messages as snippets. A fixed flow means every lead gets your best conversation, and you finally see where people drop off so you can fix that exact step." },
+      { title: "Turn attention into conversations daily", meta: "15 minutes a day",
+        body: "Fifteen minutes a day: reply to every story reaction and every new follower with a genuine question about them, not about you. These are the warmest people you have, and almost nobody talks to them. Conversations create clients. Content only creates the attention that makes conversations possible." } ],
+      outro: "You already create interest. These three steps make sure it stops evaporating." },
     nl: { steps: [
-      "Sluit elke post af met één specifieke volgende stap: reageer met een keyword, stuur een DM, bekijk de vastgezette video. Eén, niet drie.",
-      "Bepaal je DM-flow één keer en schrijf hem uit: wat je zegt als iemand interesse toont, in welke volgorde, en waar het eindigt.",
-      "Reageer op elke nieuwe volger en elke story-reactie met een oprechte vraag. Die gewoonte alleen al maakt gesprekken van aandacht die je al hebt." ],
-      outro: "" }
+      { title: "Sluit elke post af met één specifieke volgende stap", meta: "Elke post",
+        body: "Reageer met een keyword, stuur een DM, bekijk de vastgezette video. Eén, niet drie: elke extra optie kost actie. Wissel de bestemming per post, maar stapel ze nooit. Het keyword-comment is de sterkste starter, omdat het jou toestemming geeft om zelf het DM-gesprek te openen.",
+        example: "Voorbeeld CTA: \"Wil je de exacte stappen? Reageer met PLAN, dan stuur ik ze je.\"" },
+      { title: "Schrijf je DM-flow één keer uit", meta: "Ongeveer 1 uur, eenmalig",
+        body: "Bepaal precies wat er gebeurt als iemand interesse toont: je openingsvraag, de twee of drie kwalificatievragen daarna, en waar het gesprek eindigt, een call, een voice note of een aanbod. Sla de berichten op als snippets. Een vaste flow betekent dat elke lead je beste gesprek krijgt, en dat je eindelijk ziet waar mensen afhaken zodat je precies die stap kunt fixen." },
+      { title: "Maak van aandacht elke dag gesprekken", meta: "15 minuten per dag",
+        body: "Vijftien minuten per dag: reageer op elke story-reactie en elke nieuwe volger met een oprechte vraag over hen, niet over jou. Dit zijn de warmste mensen die je hebt, en bijna niemand praat met ze. Gesprekken maken klanten. Content maakt alleen de aandacht die gesprekken mogelijk maakt." } ],
+      outro: "Je creëert al interesse. Deze drie stappen zorgen dat die stopt met verdampen." }
   },
   offer: {
     en: { steps: [
-      "Write down your offer in one sentence: who, what transformation, what timeframe. If it takes a paragraph, it is not ready to sell to strangers.",
-      "Make the invisible visible: talk about your offer and your client results openly, at least weekly. Your network buying quietly is not proof strangers know what you sell.",
-      "Ask your last three clients why they actually bought. Their words are your future content and copy." ],
-      outro: "" },
+      { title: "Write your offer in one sentence", meta: "About 30 minutes",
+        body: "Who you help, what transformation, in what timeframe. If you need a paragraph, it is not ready to sell to strangers. The test: can someone repeat it back after hearing it once? Sharpen it until they can, because everything else, your content, your bio and your DMs, hangs on this sentence.",
+        example: "Formula: \"I help [who] go from [A] to [B] in [timeframe], without [the thing they hate].\"" },
+      { title: "Make the invisible visible", meta: "Weekly",
+        body: "Talk about your offer and your client results openly, at least weekly: what you are building with clients, the wins, the behind the scenes. Your network buying quietly proves the offer works. It does not prove strangers know it exists. A new follower should be able to tell what you sell, and that it works, within one week of scrolling your feed." },
+      { title: "Mine your last three clients for the words that sell", meta: "3 conversations",
+        body: "Ask them why they really bought, what almost stopped them, and what has changed since. Record the answers. Their exact sentences are your future hooks, captions and objection handlers: copy written in your client's own words converts, because it reads like your prospect's own thoughts." } ],
+      outro: "Your offer already works. These steps make it visible to the people who do not know you yet." },
     nl: { steps: [
-      "Schrijf je aanbod op in één zin: wie, welke transformatie, welke termijn. Heb je er een alinea voor nodig, dan is het nog niet klaar om aan vreemden te verkopen.",
-      "Maak het onzichtbare zichtbaar: praat openlijk over je aanbod en je klantresultaten, minstens wekelijks. Dat je netwerk stilletjes koopt, bewijst niet dat vreemden weten wat je verkoopt.",
-      "Vraag je laatste drie klanten waarom ze echt kochten. Hun woorden zijn je toekomstige content en copy." ],
-      outro: "" }
+      { title: "Schrijf je aanbod in één zin", meta: "Ongeveer 30 minuten",
+        body: "Wie je helpt, welke transformatie, in welke termijn. Heb je er een alinea voor nodig, dan is het nog niet klaar om aan vreemden te verkopen. De test: kan iemand het herhalen nadat hij het één keer heeft gehoord? Slijp net zolang tot dat lukt, want al het andere, je content, je bio en je DMs, hangt aan deze zin.",
+        example: "Formule: \"Ik help [wie] van [A] naar [B] in [termijn], zonder [waar ze een hekel aan hebben].\"" },
+      { title: "Maak het onzichtbare zichtbaar", meta: "Wekelijks",
+        body: "Praat openlijk over je aanbod en je klantresultaten, minstens wekelijks: waar je met klanten aan bouwt, de wins, de behind the scenes. Dat je netwerk stilletjes koopt bewijst dat je aanbod werkt. Het bewijst niet dat vreemden weten dat het bestaat. Een nieuwe volger moet binnen een week scrollen kunnen zien wat je verkoopt, en dat het werkt." },
+      { title: "Haal de woorden die verkopen uit je laatste drie klanten", meta: "3 gesprekken",
+        body: "Vraag waarom ze echt kochten, wat ze bijna had tegengehouden, en wat er sindsdien is veranderd. Neem de antwoorden op. Hun exacte zinnen zijn je toekomstige hooks, captions en bezwaar-antwoorden: copy in de woorden van je klant converteert, omdat het leest als de gedachten van je prospect." } ],
+      outro: "Je aanbod werkt al. Deze stappen maken het zichtbaar voor de mensen die je nog niet kennen." }
   }
 };
 
 const state = {
-  lang: new URLSearchParams(location.search).get('lang') === 'nl' ? 'nl' : 'en',
+  lang: new URLSearchParams(location.search).get('lang') === 'en' ? 'en' : 'nl',
+  cep: parseInt(new URLSearchParams(location.search).get('cep'), 10) || 0,
   screen: 'landing',
   qIndex: 0,
   lead: { name: '', handle: '', email: '', followers: '' },
@@ -744,6 +1066,38 @@ const state = {
   posted: false,
   advancing: false
 };
+
+if (VSL_WISTIA_ID) {
+  const wistiaPlayerJs = document.createElement('script');
+  wistiaPlayerJs.src = 'https://fast.wistia.com/player.js';
+  wistiaPlayerJs.async = true;
+  document.head.appendChild(wistiaPlayerJs);
+  const wistiaEmbedJs = document.createElement('script');
+  wistiaEmbedJs.src = 'https://fast.wistia.com/embed/' + VSL_WISTIA_ID + '.js';
+  wistiaEmbedJs.async = true;
+  wistiaEmbedJs.type = 'module';
+  document.head.appendChild(wistiaEmbedJs);
+  const wistiaStyle = document.createElement('style');
+  wistiaStyle.textContent =
+    "wistia-player[media-id='" + VSL_WISTIA_ID + "']:not(:defined){" +
+    "background:center / contain no-repeat url('https://fast.wistia.com/embed/medias/" + VSL_WISTIA_ID + "/swatch');" +
+    "display:block;filter:blur(5px);padding-top:" + (100 / VSL_WISTIA_ASPECT).toFixed(2) + "%;}";
+  document.head.appendChild(wistiaStyle);
+}
+
+if (META_PIXEL_ID) {
+  !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+  n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;
+  n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;
+  t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,
+  document,'script','https://connect.facebook.net/en_US/fbevents.js');
+  fbq('init', META_PIXEL_ID);
+  fbq('track', 'PageView');
+}
+
+function pixelTrack(name, isCustom) {
+  if (window.fbq) fbq(isCustom ? 'trackCustom' : 'track', name);
+}
 
 function t(key) { return COPY[state.lang][key]; }
 
@@ -755,6 +1109,11 @@ function colorFor(pct) {
   if (pct < 40) return 'red';
   if (pct < 70) return 'orange';
   return 'green';
+}
+
+// Eased progress: jumps ahead early, slows down toward the end (Wistia-style).
+function progressPct(num) {
+  return Math.round(100 * Math.sqrt(num / 13));
 }
 
 function computeResults() {
@@ -837,8 +1196,11 @@ function buildPayload(results) {
 }
 
 function postResults(results) {
-  if (state.posted || !RESULTS_ENDPOINT) return;
+  if (state.posted) return;
   state.posted = true;
+  pixelTrack('CompleteRegistration');
+  pixelTrack('AssessmentComplete', true);
+  if (!RESULTS_ENDPOINT) return;
   try {
     fetch(RESULTS_ENDPOINT, {
       method: 'POST',
@@ -857,12 +1219,27 @@ const tickerSlot = document.getElementById('ticker-slot');
 
 function render() {
   document.getElementById('footer-text').textContent = t('footer');
+  const footerNav = document.getElementById('footer-nav');
+  if (state.screen === 'landing') {
+    let nav = '<a data-target="assessment">Assessment</a>';
+    if (TESTIMONIAL_VIDEOS.length || TESTIMONIALS.length) nav += '<a data-target="testimonials">' + t('testiHeading') + '</a>';
+    if (FAQ_ITEMS.length) nav += '<a data-target="faq">' + t('faqHeading') + '</a>';
+    footerNav.innerHTML = nav;
+    footerNav.querySelectorAll('a').forEach(function (a) {
+      a.addEventListener('click', function () {
+        const el = document.getElementById(a.getAttribute('data-target'));
+        if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      });
+    });
+  } else {
+    footerNav.innerHTML = '';
+  }
   document.documentElement.lang = state.lang;
   app.className = state.screen === 'landing' ? 'landing' : '';
   if (state.screen === 'landing') {
     topbarRight.innerHTML =
-      '<button type="button" class="lang-btn' + (state.lang === 'en' ? ' active' : '') + '" data-lang="en">EN</button>' +
-      '<button type="button" class="lang-btn' + (state.lang === 'nl' ? ' active' : '') + '" data-lang="nl">NL</button>';
+      '<button type="button" class="lang-btn' + (state.lang === 'nl' ? ' active' : '') + '" data-lang="nl">NL</button>' +
+      '<button type="button" class="lang-btn' + (state.lang === 'en' ? ' active' : '') + '" data-lang="en">EN</button>';
     topbarRight.querySelectorAll('.lang-btn').forEach(function (btn) {
       btn.addEventListener('click', function () {
         state.lang = btn.getAttribute('data-lang');
@@ -938,23 +1315,118 @@ function mockupHtml() {
   );
 }
 
+function ytEmbed(id, title) {
+  return '<div class="video-frame"><iframe src="https://www.youtube-nocookie.com/embed/' + id + '?rel=0&modestbranding=1" title="' + esc(title || '') + '" loading="lazy" allow="accelerometer; encrypted-media; picture-in-picture" allowfullscreen></iframe></div>';
+}
+
+function faqListHtml() {
+  let html = '<div class="faq-list">';
+  FAQ_ITEMS.forEach(function (item) {
+    html +=
+      '<details class="faq-acc">' +
+        '<summary><span>' + esc(item.q[state.lang]) + '</span><span class="faq-ind" aria-hidden="true">+</span></summary>' +
+        '<p class="faq-a">' + esc(item.a[state.lang]) + '</p>' +
+      '</details>';
+  });
+  return html + '</div>';
+}
+
+function testimonialVideosHtml(extraClass) {
+  let html = '<div class="testi-video-grid' + (extraClass ? ' ' + extraClass : '') + '">';
+  TESTIMONIAL_VIDEOS.forEach(function (item) {
+    html += '<div class="testi-video">';
+    if (item.vimeo) {
+      html += '<div class="testi-video-frame"><iframe src="https://player.vimeo.com/video/' + item.vimeo + '?dnt=1&title=0&byline=0&portrait=0" title="' + esc(item.name) + '" loading="lazy" allow="fullscreen; picture-in-picture" allowfullscreen></iframe></div>';
+    } else if (item.yt) {
+      html += '<div class="testi-video-frame"><iframe src="https://www.youtube-nocookie.com/embed/' + item.yt + '?rel=0&modestbranding=1" title="' + esc(item.name) + '" loading="lazy" allow="accelerometer; encrypted-media; picture-in-picture" allowfullscreen></iframe></div>';
+    } else if (item.mp4) {
+      html += '<div class="testi-video-frame"><video src="' + esc(item.mp4) + '" controls playsinline preload="metadata"></video></div>';
+    }
+    if (item.name || item[state.lang]) {
+      html +=
+        '<div class="testi-video-caption">' +
+          '<div class="testi-name">' + esc(item.name) + '</div>' +
+          '<div class="testi-line">' + esc(item[state.lang] || '') + '</div>' +
+        '</div>';
+    }
+    html += '</div>';
+  });
+  return html + '</div>';
+}
+
 function renderLanding() {
-  app.innerHTML =
+  const headline = (CEP_HEADLINES[state.cep] && CEP_HEADLINES[state.cep][state.lang]) || t('landingHeadlineHtml');
+
+  let html =
     '<div class="hero">' +
-      '<h1>' + t('landingHeadlineHtml') + '</h1>' +
+      '<div class="eyebrow">Profile to Profit Assessment&trade;</div>' +
+      '<h1>' + headline + '</h1>' +
       '<p class="sub">' + t('landingSub') + '</p>' +
-    '</div>' +
-    mockupHtml() +
-    '<div class="start-card">' +
+    '</div>';
+
+  let vslInner;
+  if (VSL_WISTIA_ID) {
+    vslInner = '<div class="video-frame wistia-frame"><wistia-player media-id="' + VSL_WISTIA_ID + '" aspect="' + VSL_WISTIA_ASPECT + '"></wistia-player></div>';
+  } else if (VSL_YOUTUBE_ID) {
+    vslInner = ytEmbed(VSL_YOUTUBE_ID, 'Aithos Marketing');
+  } else {
+    vslInner = '<div class="video-frame video-placeholder"><svg viewBox="0 0 48 48" width="64" height="64" aria-hidden="true"><circle cx="24" cy="24" r="22" fill="none" stroke="#4a4846" stroke-width="2"/><path d="M19 15 L34 24 L19 33 Z" fill="#4a4846"/></svg></div>';
+  }
+  html += '<div class="vsl">' + vslInner + '</div>';
+
+  html += mockupHtml() +
+    '<div class="start-card" id="assessment">' +
       '<div class="start-peek"></div>' +
-      '<div class="progress-label">1 / 13</div>' +
-      '<div class="progress-track"><div class="progress-fill" style="width:7.7%"></div></div>' +
-      '<button type="button" class="btn" id="start-btn">' + t('landingBtn') + '</button>' +
+      '<div class="progress-label">' + progressPct(1) + '%</div>' +
+      '<div class="progress-track"><div class="progress-fill" style="width:' + progressPct(1) + '%"></div></div>' +
+      '<button type="button" class="btn start-btn">' + t('landingBtn') + '</button>' +
       '<p class="micro">' + t('landingMicro') + '</p>' +
     '</div>';
-  document.getElementById('start-btn').addEventListener('click', function () {
-    state.screen = 'lead';
-    render();
+
+  const hasExtras = TESTIMONIALS.length > 0 || TESTIMONIAL_VIDEOS.length > 0 || FAQ_ITEMS.length > 0;
+
+  if (TESTIMONIAL_VIDEOS.length) {
+    html += '<div class="landing-section" id="testimonials">' +
+      '<div class="eyebrow">' + t('testiEyebrow') + '</div>' +
+      '<h2>' + t('testiHeading') + '</h2>' +
+      testimonialVideosHtml('') +
+      '</div>';
+  } else if (TESTIMONIALS.length) {
+    html += '<div class="landing-section" id="testimonials">' +
+      '<div class="eyebrow">' + t('testiEyebrow') + '</div>' +
+      '<h2>' + t('testiHeading') + '</h2><div class="testi-grid">';
+    TESTIMONIALS.forEach(function (item) {
+      html +=
+        '<div class="testi-card">' +
+          '<div class="testi-name">' + esc(item.name) + '</div>' +
+          '<div class="testi-line">' + esc(item[state.lang]) + '</div>' +
+        '</div>';
+    });
+    html += '</div></div>';
+  }
+
+  if (FAQ_ITEMS.length) {
+    html += '<div class="landing-section" id="faq">' +
+      '<div class="eyebrow">' + t('faqEyebrow') + '</div>' +
+      '<h2>' + t('faqHeading') + '</h2>' +
+      faqListHtml() +
+      '</div>';
+  }
+
+  if (hasExtras) {
+    html +=
+      '<div class="landing-bottom-cta">' +
+        '<button type="button" class="btn start-btn">' + t('landingBtn') + '</button>' +
+        '<p class="micro">' + t('landingMicro') + '</p>' +
+      '</div>';
+  }
+
+  app.innerHTML = html;
+  app.querySelectorAll('.start-btn').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      state.screen = 'lead';
+      render();
+    });
   });
 }
 
@@ -996,6 +1468,7 @@ function renderLead() {
     state.lead.name = name;
     state.lead.handle = handle;
     state.lead.followers = followers;
+    pixelTrack('Lead');
     state.screen = 'question';
     state.qIndex = 0;
     render();
@@ -1009,8 +1482,8 @@ function renderQuestion() {
     '<div class="q-top">' +
       '<button type="button" class="back-btn" id="back-btn" aria-label="Back">&#8592;</button>' +
       '<div class="progress-wrap">' +
-        '<div class="progress-label">' + num + ' / 13</div>' +
-        '<div class="progress-track"><div class="progress-fill" style="width:' + (num / 13 * 100) + '%"></div></div>' +
+        '<div class="progress-label">' + progressPct(num) + '%</div>' +
+        '<div class="progress-track"><div class="progress-fill" style="width:' + progressPct(num) + '%"></div></div>' +
       '</div>' +
     '</div>' +
     '<div class="panel">' +
@@ -1118,30 +1591,65 @@ function renderResults() {
       '<div class="fix-section">' +
         '<h2>' + t('fixHeading') + results.byKey[results.weakestKey].name + '</h2>' +
         '<p class="fix-intro">' + t('fixIntro') + '</p>' +
-        '<ol class="fix-list">';
-    plan.steps.forEach(function (step) { html += '<li>' + step + '</li>'; });
-    html += '</ol>';
+        '<div class="fix-steps">';
+    plan.steps.forEach(function (step, i) {
+      html +=
+        '<div class="fix-step">' +
+          '<div class="fix-step-top">' +
+            '<div class="fix-step-num">' + (i + 1) + '</div>' +
+            '<div class="fix-step-title">' + step.title + '</div>' +
+            (step.meta ? '<div class="fix-step-meta">' + step.meta + '</div>' : '') +
+          '</div>' +
+          '<p class="fix-step-body">' + step.body + '</p>' +
+          (step.example ? '<p class="fix-example">' + step.example + '</p>' : '') +
+        '</div>';
+    });
+    html += '</div>';
     if (plan.outro) html += '<p class="fix-outro">' + plan.outro + '</p>';
     html += '</div>';
   }
 
   html +=
     '<div class="benchmark">' + t('benchmark') + '</div>' +
-    '<div class="outro-block">' + t('outroHtml') + '</div>' +
-    '<button type="button" class="btn btn-outline no-print" id="download-btn">' + t('downloadBtn') + '</button>' +
+    '<div class="outro-block">' + t('outroHtml') + '</div>';
+
+  const igIconTop = '<svg class="ig-ic" viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><rect x="2.5" y="2.5" width="19" height="19" rx="5.5"/><circle cx="12" cy="12" r="4.2"/><circle cx="17.4" cy="6.6" r="1.2" fill="currentColor" stroke="none"/></svg>';
+  html += '<a class="btn btn-ig cta-mini no-print" href="' + DM_URL + '" target="_blank" rel="noopener">' + igIconTop + '<span>' + t('ctaBtn') + '</span></a>';
+
+  if (TESTIMONIAL_VIDEOS.length) {
+    html += '<div class="results-testi no-print">' +
+      '<div class="eyebrow">' + t('testiEyebrow') + '</div>' +
+      '<h2>' + t('testiHeading') + '</h2>' +
+      testimonialVideosHtml('compact') +
+      '</div>';
+  } else if (TESTIMONIALS.length) {
+    html += '<div class="proof-lines">';
+    TESTIMONIALS.forEach(function (item) {
+      html += '<p class="proof-line"><span class="proof-name">' + esc(item.name) + '</span> · ' + esc(item[state.lang]) + '</p>';
+    });
+    html += '</div>';
+  }
+
+  const igIcon = '<svg class="ig-ic" viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><rect x="2.5" y="2.5" width="19" height="19" rx="5.5"/><circle cx="12" cy="12" r="4.2"/><circle cx="17.4" cy="6.6" r="1.2" fill="currentColor" stroke="none"/></svg>';
+
+  html +=
+    '<div class="cta-block no-print">' +
+      '<h2>' + t('ctaHeading') + '</h2>' +
+      '<p>' + t('ctaText') + '</p>' +
+      '<a class="btn btn-ig" href="' + DM_URL + '" target="_blank" rel="noopener">' + igIcon + '<span>' + t('ctaBtn') + '</span></a>' +
     '</div>';
 
-  app.innerHTML = html;
+  if (FAQ_ITEMS.length) {
+    html += '<div class="results-faq no-print">' +
+      '<div class="eyebrow">' + t('faqEyebrow') + '</div>' +
+      '<h2>' + t('faqHeading') + '</h2>' +
+      faqListHtml() +
+      '</div>';
+  }
 
-  document.getElementById('download-btn').addEventListener('click', function () {
-    const prevTitle = document.title;
-    document.title = 'Profile to Profit Assessment - ' + state.lead.name;
-    window.addEventListener('afterprint', function restore() {
-      document.title = prevTitle;
-      window.removeEventListener('afterprint', restore);
-    });
-    window.print();
-  });
+  html += '</div>';
+
+  app.innerHTML = html;
 
   requestAnimationFrame(function () {
     requestAnimationFrame(function () {
