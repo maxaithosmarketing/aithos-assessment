@@ -1095,19 +1095,36 @@ if (VSL_WISTIA_ID) {
     "display:block;filter:blur(5px);padding-top:" + (100 / VSL_WISTIA_ASPECT).toFixed(2) + "%;}";
   document.head.appendChild(wistiaStyle);
 
-  // VSL watch tracking -> Meta Pixel: play, 25/50/75% and (nearly) complete, each fired once.
-  window._wq = window._wq || [];
-  const vslFired = {};
-  window._wq.push({ id: VSL_WISTIA_ID, onReady: function (video) {
-    video.bind('play', function () {
-      if (!vslFired.play) { vslFired.play = true; pixelTrack('VSL_Play', true); }
-    });
-    video.bind('percentwatchedchanged', function (percent) {
-      [[0.25, 'VSL_25'], [0.5, 'VSL_50'], [0.75, 'VSL_75'], [0.95, 'VSL_Complete']].forEach(function (m) {
-        if (percent >= m[0] && !vslFired[m[1]]) { vslFired[m[1]] = true; pixelTrack(m[1], true); }
-      });
-    });
-  } });
+}
+
+// VSL watch tracking -> Meta Pixel: play, 25/50/75% and (nearly) complete, each fired once per visit.
+// Binds to the new Wistia web component via DOM events, with a poll on percentWatched as safety net.
+var vslFired = {};
+function vslMilestonesCheck(player, evt) {
+  let pct = 0;
+  if (evt && evt.detail && typeof evt.detail.percentWatched === 'number') pct = evt.detail.percentWatched;
+  else if (typeof player.percentWatched === 'number') pct = player.percentWatched;
+  [[0.25, 'VSL_25'], [0.5, 'VSL_50'], [0.75, 'VSL_75'], [0.95, 'VSL_Complete']].forEach(function (m) {
+    if (pct >= m[0] && !vslFired[m[1]]) { vslFired[m[1]] = true; pixelTrack(m[1], true); }
+  });
+}
+function bindVslTracking() {
+  const player = app.querySelector('wistia-player');
+  if (!player || player.__vslBound) return;
+  player.__vslBound = true;
+  player.addEventListener('play', function () {
+    if (!vslFired.play) { vslFired.play = true; pixelTrack('VSL_Play', true); }
+    if (!player.__vslPoll) {
+      player.__vslPoll = setInterval(function () {
+        vslMilestonesCheck(player);
+        if (vslFired.VSL_Complete) clearInterval(player.__vslPoll);
+      }, 2000);
+    }
+  });
+  player.addEventListener('percent-watched-changed', function (e) { vslMilestonesCheck(player, e); });
+  player.addEventListener('ended', function () {
+    if (!vslFired.VSL_Complete) { vslFired.VSL_Complete = true; pixelTrack('VSL_Complete', true); }
+  });
 }
 
 if (META_PIXEL_ID) {
@@ -1447,6 +1464,7 @@ function renderLanding() {
   }
 
   app.innerHTML = html;
+  if (VSL_WISTIA_ID) bindVslTracking();
   app.querySelectorAll('.start-btn').forEach(function (btn) {
     btn.addEventListener('click', function () {
       state.screen = 'lead';
