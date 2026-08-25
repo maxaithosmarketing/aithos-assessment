@@ -697,6 +697,9 @@
 <script>
 const RESULTS_ENDPOINT = 'https://aithos.app.n8n.cloud/webhook/aithos-assessment';
 const DM_URL = 'https://ig.me/m/vonk.max?ref=assessment';
+// WhatsApp number in international format, digits only (e.g. '31612345678').
+// When set, the results CTA becomes a WhatsApp button with a prefilled message; empty = Instagram DM button.
+var WHATSAPP_NUMBER = '31645943857';
 // VSL: Wistia media id (takes precedence) or YouTube video id. Empty both = placeholder frame.
 var VSL_WISTIA_ID = 'rendu38p4f';
 var VSL_WISTIA_ASPECT = 1.6494845360824741;
@@ -762,6 +765,10 @@ const COPY = {
     ctaHeading: "Want to go through this together?",
     ctaText: "This plan is yours either way. If you want me to walk you through it and show you exactly what I would do in your situation, send me a DM and we will pick it up from there.",
     ctaBtn: "DM me on Instagram",
+    ctaTextWa: "This plan is yours either way. If you want me to walk you through it and show you exactly what I would do in your situation, send me a message on WhatsApp and we will pick it up from there.",
+    ctaBtnWa: "Message me on WhatsApp",
+    waPrefill: "Hi Max, I just took the assessment. My result: ",
+    waFixPrefix: "My #1 fix: ",
     testiHeading: "What Our Clients Say",
     testiEyebrow: "The proof",
     faqHeading: "FAQ",
@@ -791,6 +798,10 @@ const COPY = {
     ctaHeading: "Zullen we hem samen doorlopen?",
     ctaText: "Dit plan is sowieso van jou. Wil je dat ik hem met je doorloop en je precies laat zien wat ik in jouw situatie zou doen, stuur me dan een DM, dan pakken we het daar op.",
     ctaBtn: "Stuur me een DM op Instagram",
+    ctaTextWa: "Dit plan is sowieso van jou. Wil je dat ik hem met je doorloop en je precies laat zien wat ik in jouw situatie zou doen, stuur me dan een appje, dan pakken we het daar op.",
+    ctaBtnWa: "App me op WhatsApp",
+    waPrefill: "Hoi Max, ik heb net de assessment gedaan. Mijn resultaat: ",
+    waFixPrefix: "Mijn #1 fix: ",
     testiHeading: "Wat onze klanten zeggen",
     testiEyebrow: "Het bewijs",
     faqHeading: "FAQ",
@@ -1083,6 +1094,20 @@ if (VSL_WISTIA_ID) {
     "background:center / contain no-repeat url('https://fast.wistia.com/embed/medias/" + VSL_WISTIA_ID + "/swatch');" +
     "display:block;filter:blur(5px);padding-top:" + (100 / VSL_WISTIA_ASPECT).toFixed(2) + "%;}";
   document.head.appendChild(wistiaStyle);
+
+  // VSL watch tracking -> Meta Pixel: play, 25/50/75% and (nearly) complete, each fired once.
+  window._wq = window._wq || [];
+  const vslFired = {};
+  window._wq.push({ id: VSL_WISTIA_ID, onReady: function (video) {
+    video.bind('play', function () {
+      if (!vslFired.play) { vslFired.play = true; pixelTrack('VSL_Play', true); }
+    });
+    video.bind('percentwatchedchanged', function (percent) {
+      [[0.25, 'VSL_25'], [0.5, 'VSL_50'], [0.75, 'VSL_75'], [0.95, 'VSL_Complete']].forEach(function (m) {
+        if (percent >= m[0] && !vslFired[m[1]]) { vslFired[m[1]] = true; pixelTrack(m[1], true); }
+      });
+    });
+  } });
 }
 
 if (META_PIXEL_ID) {
@@ -1613,8 +1638,21 @@ function renderResults() {
     '<div class="benchmark">' + t('benchmark') + '</div>' +
     '<div class="outro-block">' + t('outroHtml') + '</div>';
 
-  const igIconTop = '<svg class="ig-ic" viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><rect x="2.5" y="2.5" width="19" height="19" rx="5.5"/><circle cx="12" cy="12" r="4.2"/><circle cx="17.4" cy="6.6" r="1.2" fill="currentColor" stroke="none"/></svg>';
-  html += '<a class="btn btn-ig cta-mini no-print" href="' + DM_URL + '" target="_blank" rel="noopener">' + igIconTop + '<span>' + t('ctaBtn') + '</span></a>';
+  const igIconSvg = '<svg class="ig-ic" viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><rect x="2.5" y="2.5" width="19" height="19" rx="5.5"/><circle cx="12" cy="12" r="4.2"/><circle cx="17.4" cy="6.6" r="1.2" fill="currentColor" stroke="none"/></svg>';
+  const waIconSvg = '<svg class="ig-ic" viewBox="0 0 24 24" width="19" height="19" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18.2c-1.5 0-3-.4-4.3-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2zm4.6-6.2c-.3-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1-.2.3-.7.8-.8 1-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.4-3c-.3-.4 0-.5.1-.7l.4-.5c.1-.2.2-.3.3-.5.1-.2 0-.4 0-.5l-.8-1.9c-.2-.5-.4-.4-.6-.4h-.5c-.2 0-.5.1-.7.3-.2.3-.9.9-.9 2.1s.9 2.5 1 2.6c.1.2 1.8 2.8 4.3 3.9 2.6 1.1 2.6.7 3 .7.5 0 1.5-.6 1.7-1.2.2-.6.2-1.1.1-1.2 0-.1-.2-.2-.5-.3z"/></svg>';
+  const isWa = !!WHATSAPP_NUMBER;
+  let waMsg = t('waPrefill') + 'Stage ' + results.stage + ', ' + stage.name[state.lang] + '.';
+  if (results.stage !== 5) {
+    waMsg += ' ' + t('waFixPrefix') + results.byKey[results.weakestKey].name + '.';
+  }
+  const ctaHref = isWa
+    ? 'https://wa.me/' + WHATSAPP_NUMBER + '?text=' + encodeURIComponent(waMsg)
+    : DM_URL;
+  const ctaIcon = isWa ? waIconSvg : igIconSvg;
+  const ctaLabel = isWa ? t('ctaBtnWa') : t('ctaBtn');
+  const ctaBodyText = isWa ? t('ctaTextWa') : t('ctaText');
+
+  html += '<a class="btn btn-ig cta-mini cta-contact no-print" href="' + ctaHref + '" target="_blank" rel="noopener">' + ctaIcon + '<span>' + ctaLabel + '</span></a>';
 
   if (TESTIMONIAL_VIDEOS.length) {
     html += '<div class="results-testi no-print">' +
@@ -1630,13 +1668,11 @@ function renderResults() {
     html += '</div>';
   }
 
-  const igIcon = '<svg class="ig-ic" viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><rect x="2.5" y="2.5" width="19" height="19" rx="5.5"/><circle cx="12" cy="12" r="4.2"/><circle cx="17.4" cy="6.6" r="1.2" fill="currentColor" stroke="none"/></svg>';
-
   html +=
     '<div class="cta-block no-print">' +
       '<h2>' + t('ctaHeading') + '</h2>' +
-      '<p>' + t('ctaText') + '</p>' +
-      '<a class="btn btn-ig" href="' + DM_URL + '" target="_blank" rel="noopener">' + igIcon + '<span>' + t('ctaBtn') + '</span></a>' +
+      '<p>' + ctaBodyText + '</p>' +
+      '<a class="btn btn-ig cta-contact" href="' + ctaHref + '" target="_blank" rel="noopener">' + ctaIcon + '<span>' + ctaLabel + '</span></a>' +
     '</div>';
 
   if (FAQ_ITEMS.length) {
@@ -1650,6 +1686,10 @@ function renderResults() {
   html += '</div>';
 
   app.innerHTML = html;
+
+  app.querySelectorAll('.cta-contact').forEach(function (a) {
+    a.addEventListener('click', function () { pixelTrack('Contact'); });
+  });
 
   requestAnimationFrame(function () {
     requestAnimationFrame(function () {
