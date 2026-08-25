@@ -642,6 +642,64 @@
   .ig-ic { flex-shrink: 0; }
   .video-placeholder { display: flex; align-items: center; justify-content: center; }
   .cta-mini { margin-top: 30px; }
+  .cta-early { margin-top: 24px; }
+  .wa-micro { text-align: center; font-size: 12.5px; color: var(--muted); margin-top: 8px; }
+  .stage-steps { display: flex; align-items: center; margin-bottom: 4px; }
+  .stage-step {
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    border: 2px solid #dddbd7;
+    background: #ffffff;
+    color: var(--muted);
+    font-size: 12px;
+    font-weight: 800;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .stage-step.done { border-color: var(--orange); color: var(--orange); }
+  .stage-step.active { background: var(--orange); border-color: var(--orange); color: #ffffff; }
+  .stage-line { flex: 1; height: 2px; background: #dddbd7; max-width: 46px; }
+  .stage-line.done { background: var(--orange); }
+  .stage-of {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--orange);
+    margin: 10px 0 6px;
+  }
+  .own-words {
+    margin-top: 18px;
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-left: 4px solid var(--orange);
+    border-radius: 10px;
+    padding: 14px 16px;
+  }
+  .own-words-label {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--orange);
+    margin-bottom: 5px;
+  }
+  .own-words p { font-style: italic; color: #3f3d3a; font-size: 15px; }
+  .allred-note { margin-top: 18px; font-weight: 600; color: var(--black); }
+  .next-steps { margin-top: 20px; text-align: left; display: flex; flex-direction: column; gap: 10px; }
+  .next-title {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--orange);
+    margin-bottom: 2px;
+    text-align: center;
+  }
+  .next-step { display: flex; align-items: center; gap: 11px; font-size: 14.5px; }
   .results-testi { margin-top: 38px; text-align: center; }
   .results-testi h2 { font-size: 24px; }
   .results-faq { margin-top: 42px; text-align: center; }
@@ -769,6 +827,14 @@ const COPY = {
     ctaBtnWa: "Message me on WhatsApp",
     waPrefill: "Hi Max, I just took the assessment. My result: ",
     waFixPrefix: "My #1 fix: ",
+    waMicro: "Your message is already filled in, just hit send.",
+    ownWordsLabel: "In your own words:",
+    stageOfWord: "of 5",
+    allRedNote: "Four red pillars does not mean everything is broken. It means order matters: one fix first, the rest follows.",
+    nextTitle: "What happens next",
+    nextStep1: "You send the message. It is already filled in.",
+    nextStep2: "I personally look at your results.",
+    nextStep3: "You get targeted help: assets for your #1 fix, or a short call.",
     testiHeading: "What Our Clients Say",
     testiEyebrow: "The proof",
     faqHeading: "FAQ",
@@ -802,6 +868,14 @@ const COPY = {
     ctaBtnWa: "App me op WhatsApp",
     waPrefill: "Hoi Max, ik heb net de assessment gedaan. Mijn resultaat: ",
     waFixPrefix: "Mijn #1 fix: ",
+    waMicro: "Je bericht staat al voor je klaar, versturen is genoeg.",
+    ownWordsLabel: "Je schreef zelf:",
+    stageOfWord: "van 5",
+    allRedNote: "Vier rode pijlers betekent niet dat alles kapot is. Het betekent dat de volgorde belangrijk is: één fix eerst, de rest volgt.",
+    nextTitle: "Wat er nu gebeurt",
+    nextStep1: "Jij stuurt het appje. Het staat al voor je klaar.",
+    nextStep2: "Ik bekijk jouw uitslag persoonlijk.",
+    nextStep3: "Je krijgt gerichte hulp: assets voor jouw #1 fix, of een korte call.",
     testiHeading: "Wat onze klanten zeggen",
     testiEyebrow: "Het bewijs",
     faqHeading: "FAQ",
@@ -829,8 +903,6 @@ const CEP_HEADLINES = {
 };
 
 const QUESTIONS = [
-  { id: 'q1', type: 'open',
-    text: { en: "Who do you help, and with what?", nl: "Wie help je, en waarmee?" } },
   { id: 'q2', type: 'mc',
     text: { en: "How long have you been posting content consistently?", nl: "Hoe lang post je al consistent content?" },
     options: [
@@ -871,12 +943,14 @@ const QUESTIONS = [
       { points: 2, en: "I share them regularly in posts or stories", nl: "Ik deel ze regelmatig in posts of stories" },
       { points: 3, en: "Pinned and in highlights: results are the first thing you see", nl: "Vastgezet en in highlights: resultaten zijn het eerste wat je ziet" }
     ] },
+  { id: 'q1', type: 'open',
+    text: { en: "Who do you help, and with what?", nl: "Wie help je, en waarmee?" } },
   { id: 'q7', type: 'mc',
     text: { en: "How many DMs do you get in a normal week from people interested in working with you?", nl: "Hoeveel DMs krijg je in een normale week van mensen die interesse hebben om met je te werken?" },
     options: [
       { points: 0, en: "Zero", nl: "Nul" },
       { points: 1, en: "1 to 5", nl: "1 tot 5" },
-      { points: 2, en: "5 to 20", nl: "5 tot 20" },
+      { points: 2, en: "6 to 20", nl: "6 tot 20" },
       { points: 3, en: "More than 20", nl: "Meer dan 20" }
     ] },
   { id: 'q8', type: 'mc',
@@ -1189,6 +1263,14 @@ function computeResults() {
     (state.answers.q11 === 2 || state.answers.q11 === 3)
   ) {
     stage = 4;
+  } else if (
+    weakestKey === 'conversion' &&
+    state.answers.q10 === 1 &&
+    state.answers.q11 >= 1
+  ) {
+    // Revenue exists (€3K+), clients come from referrals and network, conversion is the leak:
+    // the classic Referral Prisoner. Fix-first plan stays the weakest pillar (conversion).
+    stage = 3;
   } else {
     stage = STAGE_MAP[weakestKey];
   }
@@ -1605,15 +1687,54 @@ function renderResults() {
   const results = computeResults();
   const stage = STAGES[results.stage];
 
+  const igIconSvg = '<svg class="ig-ic" viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><rect x="2.5" y="2.5" width="19" height="19" rx="5.5"/><circle cx="12" cy="12" r="4.2"/><circle cx="17.4" cy="6.6" r="1.2" fill="currentColor" stroke="none"/></svg>';
+  const waIconSvg = '<svg class="ig-ic" viewBox="0 0 24 24" width="19" height="19" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18.2c-1.5 0-3-.4-4.3-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2zm4.6-6.2c-.3-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1-.2.3-.7.8-.8 1-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.4-3c-.3-.4 0-.5.1-.7l.4-.5c.1-.2.2-.3.3-.5.1-.2 0-.4 0-.5l-.8-1.9c-.2-.5-.4-.4-.6-.4h-.5c-.2 0-.5.1-.7.3-.2.3-.9.9-.9 2.1s.9 2.5 1 2.6c.1.2 1.8 2.8 4.3 3.9 2.6 1.1 2.6.7 3 .7.5 0 1.5-.6 1.7-1.2.2-.6.2-1.1.1-1.2 0-.1-.2-.2-.5-.3z"/></svg>';
+  const isWa = !!WHATSAPP_NUMBER;
+  let waMsg = t('waPrefill') + 'Stage ' + results.stage + ', ' + stage.name[state.lang] + '.';
+  if (results.stage !== 5) {
+    waMsg += ' ' + t('waFixPrefix') + results.byKey[results.weakestKey].name + '.';
+  }
+  const ctaHref = isWa
+    ? 'https://wa.me/' + WHATSAPP_NUMBER + '?text=' + encodeURIComponent(waMsg)
+    : DM_URL;
+  const ctaIcon = isWa ? waIconSvg : igIconSvg;
+  const ctaLabel = isWa ? t('ctaBtnWa') : t('ctaBtn');
+  const ctaBodyText = isWa ? t('ctaTextWa') : t('ctaText');
+
+  function ctaButtonHtml(extraClass) {
+    return '<a class="btn btn-ig cta-contact no-print' + (extraClass ? ' ' + extraClass : '') + '" href="' + ctaHref + '" target="_blank" rel="noopener">' + ctaIcon + '<span>' + ctaLabel + '</span></a>' +
+      (isWa ? '<p class="wa-micro no-print">' + t('waMicro') + '</p>' : '');
+  }
+
+  let stageSteps = '<div class="stage-steps" aria-hidden="true">';
+  for (let n = 1; n <= 5; n++) {
+    stageSteps += '<div class="stage-step' + (n === results.stage ? ' active' : (n < results.stage ? ' done' : '')) + '">' + n + '</div>';
+    if (n < 5) stageSteps += '<div class="stage-line' + (n < results.stage ? ' done' : '') + '"></div>';
+  }
+  stageSteps += '</div><div class="stage-of">Stage ' + results.stage + ' ' + t('stageOfWord') + '</div>';
+
   let html =
     '<div class="panel">' +
     '<h1>' + esc(state.lead.name) + t('greeting') + '</h1>' +
     '<p class="greet-sub">' + t('greetingSub') + '</p>' +
     '<div class="stage-card">' +
+      stageSteps +
       '<h2>' + stage.name[state.lang] + '</h2>' +
       '<p>' + stage.diagnosis[state.lang] + '</p>' +
-    '</div>' +
-    '<div class="pillars">';
+    '</div>';
+
+  const q12 = (state.answers.q12 || '').trim();
+  if (q12) {
+    html +=
+      '<div class="own-words">' +
+        '<div class="own-words-label">' + t('ownWordsLabel') + '</div>' +
+        '<p>&ldquo;' + esc(q12) + '&rdquo;</p>' +
+      '</div>';
+  }
+
+  html += ctaButtonHtml('cta-early');
+
+  html += '<div class="pillars">';
 
   results.pillars.forEach(function (p) {
     html +=
@@ -1627,6 +1748,10 @@ function renderResults() {
       '</div>';
   });
   html += '</div>';
+
+  if (results.pillars.every(function (p) { return p.color === 'red'; })) {
+    html += '<p class="allred-note">' + t('allRedNote') + '</p>';
+  }
 
   if (results.stage !== 5) {
     const plan = PLANS[results.weakestKey][state.lang];
@@ -1656,21 +1781,7 @@ function renderResults() {
     '<div class="benchmark">' + t('benchmark') + '</div>' +
     '<div class="outro-block">' + t('outroHtml') + '</div>';
 
-  const igIconSvg = '<svg class="ig-ic" viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><rect x="2.5" y="2.5" width="19" height="19" rx="5.5"/><circle cx="12" cy="12" r="4.2"/><circle cx="17.4" cy="6.6" r="1.2" fill="currentColor" stroke="none"/></svg>';
-  const waIconSvg = '<svg class="ig-ic" viewBox="0 0 24 24" width="19" height="19" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18.2c-1.5 0-3-.4-4.3-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2zm4.6-6.2c-.3-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1-.2.3-.7.8-.8 1-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.4-3c-.3-.4 0-.5.1-.7l.4-.5c.1-.2.2-.3.3-.5.1-.2 0-.4 0-.5l-.8-1.9c-.2-.5-.4-.4-.6-.4h-.5c-.2 0-.5.1-.7.3-.2.3-.9.9-.9 2.1s.9 2.5 1 2.6c.1.2 1.8 2.8 4.3 3.9 2.6 1.1 2.6.7 3 .7.5 0 1.5-.6 1.7-1.2.2-.6.2-1.1.1-1.2 0-.1-.2-.2-.5-.3z"/></svg>';
-  const isWa = !!WHATSAPP_NUMBER;
-  let waMsg = t('waPrefill') + 'Stage ' + results.stage + ', ' + stage.name[state.lang] + '.';
-  if (results.stage !== 5) {
-    waMsg += ' ' + t('waFixPrefix') + results.byKey[results.weakestKey].name + '.';
-  }
-  const ctaHref = isWa
-    ? 'https://wa.me/' + WHATSAPP_NUMBER + '?text=' + encodeURIComponent(waMsg)
-    : DM_URL;
-  const ctaIcon = isWa ? waIconSvg : igIconSvg;
-  const ctaLabel = isWa ? t('ctaBtnWa') : t('ctaBtn');
-  const ctaBodyText = isWa ? t('ctaTextWa') : t('ctaText');
-
-  html += '<a class="btn btn-ig cta-mini cta-contact no-print" href="' + ctaHref + '" target="_blank" rel="noopener">' + ctaIcon + '<span>' + ctaLabel + '</span></a>';
+  html += ctaButtonHtml('cta-mini');
 
   if (TESTIMONIAL_VIDEOS.length) {
     html += '<div class="results-testi no-print">' +
@@ -1686,11 +1797,21 @@ function renderResults() {
     html += '</div>';
   }
 
+  let nextSteps = '';
+  if (isWa) {
+    nextSteps = '<div class="next-steps"><div class="next-title">' + t('nextTitle') + '</div>';
+    [1, 2, 3].forEach(function (i) {
+      nextSteps += '<div class="next-step"><div class="fix-step-num">' + i + '</div><span>' + t('nextStep' + i) + '</span></div>';
+    });
+    nextSteps += '</div>';
+  }
+
   html +=
     '<div class="cta-block no-print">' +
       '<h2>' + t('ctaHeading') + '</h2>' +
       '<p>' + ctaBodyText + '</p>' +
-      '<a class="btn btn-ig cta-contact" href="' + ctaHref + '" target="_blank" rel="noopener">' + ctaIcon + '<span>' + ctaLabel + '</span></a>' +
+      nextSteps +
+      ctaButtonHtml('') +
     '</div>';
 
   if (FAQ_ITEMS.length) {
