@@ -1450,8 +1450,10 @@ function startProfileAnalysis() {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ handle: state.lead.handle, name: state.lead.name, followers: state.lead.followers, lang: state.lang }),
       keepalive: true
-    }).catch(function (err) { console.log('Profile analysis start failed:', err); });
+    }).then(function (r) { if (!r.ok) state.analysisFailed = true; })
+      .catch(function (err) { state.analysisFailed = true; console.log('Profile analysis start failed:', err); });
   } catch (err) {
+    state.analysisFailed = true;
     console.log('Profile analysis start failed:', err);
   }
 }
@@ -1514,16 +1516,20 @@ function loadProfileReport() {
   if (!box) return;
   if (state.aiReport && state.aiReport.status === 'ready') { showAiReport(state.aiReport); return; }
   if (state.aiReport && state.aiReport.status === 'limited') { showAiLimited(state.aiReport); return; }
-  if (!REPORT_ENDPOINT || !state.lead.handle) { box.remove(); return; }
+  if (!REPORT_ENDPOINT || !state.lead.handle || state.analysisFailed) { box.remove(); return; }
   const handle = state.lead.handle;
-  let tries = 0;
+  // Every poll is one n8n execution, so poll sparingly: the analysis was started at lead
+  // capture and is usually done by the time the quiz is finished.
+  const MAX_TRIES = 7, POLL_MS = 20000;
+  let tries = 0, httpErrors = 0;
   function giveUp() { const b = document.getElementById('ai-report'); if (b) b.remove(); }
   function poll() {
     tries++;
     fetch(REPORT_ENDPOINT + '?handle=' + encodeURIComponent(handle) + '&t=' + Date.now(), { cache: 'no-store' })
-      .then(function (r) { return r.json(); })
+      .then(function (r) { if (!r.ok) { httpErrors++; return null; } return r.json(); })
       .then(function (rec) {
         if (state.lead.handle !== handle) return;
+        if (httpErrors >= 2) { giveUp(); return; }
         if (rec && rec.status === 'ready' && rec.report && recIsFresh(rec)) {
           state.aiReport = rec;
           showAiReport(rec);
@@ -1533,13 +1539,13 @@ function loadProfileReport() {
           showAiLimited(rec);
         } else if (rec && rec.status === 'failed' && recIsFresh(rec)) {
           giveUp();
-        } else if (tries < 14) {
-          setTimeout(poll, tries < 3 ? 6000 : 10000);
+        } else if (tries < MAX_TRIES) {
+          setTimeout(poll, POLL_MS);
         } else {
           giveUp();
         }
       })
-      .catch(function () { if (tries < 14) setTimeout(poll, 10000); else giveUp(); });
+      .catch(function () { httpErrors++; if (tries < MAX_TRIES && httpErrors < 2) setTimeout(poll, POLL_MS); else giveUp(); });
   }
   poll();
 }
