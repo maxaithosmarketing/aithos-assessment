@@ -739,6 +739,7 @@
   .ai-tag-fix { background: #fdeee2; color: var(--orange); }
   .ai-tag-cut { background: #fbe3e3; color: var(--red); }
   .ai-stronger { background: var(--black); color: #ffffff; border-radius: 12px; padding: 16px 18px; font-weight: 600; font-size: 15px; display: flex; flex-direction: column; gap: 6px; margin-top: 6px; }
+.ai-bio-count { font-size: 12.5px; margin: 8px 0 0; }
   .ai-week { display: flex; flex-direction: column; gap: 10px; margin-top: 12px; }
   .next-steps { margin-top: 20px; text-align: left; display: flex; flex-direction: column; gap: 10px; }
   .next-title {
@@ -906,6 +907,8 @@ const COPY = {
     aiMakeNext: "Make this next",
     aiBio: "Your bio, line by line",
     aiStronger: "The stronger version",
+    aiBioFits: "{n} of 150 characters: fits your Instagram bio, copy and paste it as is.",
+    aiBioLong: "{n} characters: trim it to 150 before you paste it into Instagram.",
     aiThisWeek: "Do this week",
     tagKeep: "Keep",
     tagFix: "Fix",
@@ -968,6 +971,8 @@ const COPY = {
     aiMakeNext: "Maak dit als volgende",
     aiBio: "Je bio, regel voor regel",
     aiStronger: "De sterkere versie",
+    aiBioFits: "{n} van 150 tekens: past in je Instagram bio, kopieer en plak hem zo.",
+    aiBioLong: "{n} tekens: kort hem in tot 150 voordat je hem in Instagram plakt.",
     aiThisWeek: "Doe dit deze week",
     tagKeep: "Houden",
     tagFix: "Fixen",
@@ -1559,7 +1564,8 @@ function aiReportHtml(rec) {
     if (Array.isArray(r.bio.stronger) && r.bio.stronger.length) {
       html += '<div class="ai-mini-label">' + t('aiStronger') + '</div><div class="ai-stronger">';
       r.bio.stronger.forEach(function (s) { html += '<div>' + esc(s) + '</div>'; });
-      html += '</div>' + (r.bio.strongerWhy ? '<p class="ai-muted ai-p">' + esc(r.bio.strongerWhy) + '</p>' : '');
+      const bioLen = r.bio.stronger.join('\n').length;
+      html += '</div><p class="ai-muted ai-bio-count">' + esc(t(bioLen <= 150 ? 'aiBioFits' : 'aiBioLong').replace('{n}', bioLen)) + '</p>' + (r.bio.strongerWhy ? '<p class="ai-muted ai-p">' + esc(r.bio.strongerWhy) + '</p>' : '');
     }
     html += '</div>';
   }
