@@ -813,10 +813,17 @@
   <div class="footer-brand" aria-hidden="true">Aithos<span class="footer-brand-c">&copy;</span></div>
 </footer>
 <script>
-const RESULTS_ENDPOINT = 'https://aithos.app.n8n.cloud/webhook/aithos-assessment';
-// Live Instagram profile analysis (n8n workflow "Aithos Profile Analyzer"). Empty = feature off.
+// Backend: the Cloudflare Worker in worker/ (leads to Notion + live Instagram profile analysis).
+// Leave WORKER_URL empty to fall back to the old n8n webhooks below.
+var WORKER_URL = '';
+var RESULTS_ENDPOINT = 'https://aithos.app.n8n.cloud/webhook/aithos-assessment';
 var ANALYZE_ENDPOINT = 'https://aithos.app.n8n.cloud/webhook/aithos-analyze';
 var REPORT_ENDPOINT = 'https://aithos.app.n8n.cloud/webhook/aithos-report';
+if (WORKER_URL) {
+  RESULTS_ENDPOINT = WORKER_URL + '/lead';
+  ANALYZE_ENDPOINT = WORKER_URL + '/analyze';
+  REPORT_ENDPOINT = WORKER_URL + '/report';
+}
 const DM_URL = 'https://ig.me/m/vonk.max?ref=assessment';
 // WhatsApp number in international format, digits only (e.g. '31612345678').
 // When set, the results CTA becomes a WhatsApp button with a prefilled message; empty = Instagram DM button.
@@ -1441,17 +1448,31 @@ function buildPayload(results) {
 function startProfileAnalysis() {
   if (!ANALYZE_ENDPOINT || !state.lead.handle) return;
   if (state.analysisFor === state.lead.handle) return;
-  state.analysisFor = state.lead.handle;
+  const handle = state.lead.handle;
+  state.analysisFor = handle;
   state.analysisStartedAt = Date.now();
+  state.analysisFailed = false;
   state.aiReport = null;
+  state.analysisPromise = null;
   try {
-    fetch(ANALYZE_ENDPOINT, {
+    // The Worker keeps this request open until the report is finished (1 to 3 minutes),
+    // which is normally shorter than the quiz itself. The old n8n webhook answers at once
+    // with {ok:true}; in that case the results page falls back to polling.
+    state.analysisPromise = fetch(ANALYZE_ENDPOINT, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ handle: state.lead.handle, name: state.lead.name, followers: state.lead.followers, lang: state.lang }),
-      keepalive: true
-    }).then(function (r) { if (!r.ok) state.analysisFailed = true; })
-      .catch(function (err) { state.analysisFailed = true; console.log('Profile analysis start failed:', err); });
+      body: JSON.stringify({ handle: handle, name: state.lead.name, followers: state.lead.followers, lang: state.lang })
+    }).then(function (r) {
+      if (!r.ok) throw new Error('analyze http ' + r.status);
+      return r.json();
+    }).then(function (rec) {
+      if (rec && rec.status && state.analysisFor === handle) state.aiReport = rec;
+      return rec;
+    }).catch(function (err) {
+      if (state.analysisFor === handle) state.analysisFailed = true;
+      console.log('Profile analysis failed:', err);
+      return null;
+    });
   } catch (err) {
     state.analysisFailed = true;
     console.log('Profile analysis start failed:', err);
@@ -1514,15 +1535,36 @@ function recIsFresh(rec) {
 function loadProfileReport() {
   const box = document.getElementById('ai-report');
   if (!box) return;
-  if (state.aiReport && state.aiReport.status === 'ready') { showAiReport(state.aiReport); return; }
-  if (state.aiReport && state.aiReport.status === 'limited') { showAiLimited(state.aiReport); return; }
   if (!REPORT_ENDPOINT || !state.lead.handle || state.analysisFailed) { box.remove(); return; }
   const handle = state.lead.handle;
-  // Every poll is one n8n execution, so poll sparingly: the analysis was started at lead
-  // capture and is usually done by the time the quiz is finished.
   const MAX_TRIES = 7, POLL_MS = 20000;
   let tries = 0, httpErrors = 0;
   function giveUp() { const b = document.getElementById('ai-report'); if (b) b.remove(); }
+  // Returns true when the record settled the section (shown or removed), false when still pending.
+  function applyRecord(rec, checkFresh) {
+    if (!rec || !rec.status) return false;
+    if (checkFresh && !recIsFresh(rec)) return false;
+    if (rec.status === 'ready' && rec.report) {
+      state.aiReport = rec;
+      showAiReport(rec);
+      pixelTrack('ProfileReportReady', true);
+      return true;
+    }
+    if (rec.status === 'limited') { state.aiReport = rec; showAiLimited(rec); return true; }
+    if (rec.status === 'failed') { giveUp(); return true; }
+    return false;
+  }
+  if (state.aiReport && applyRecord(state.aiReport, false)) return;
+  if (state.analysisPromise && !state.aiReport) {
+    state.analysisPromise.then(function (rec) {
+      if (state.lead.handle !== handle || !document.getElementById('ai-report')) return;
+      if (state.analysisFailed) { poll(); return; }
+      if (!applyRecord(rec, false)) poll();
+    });
+    return;
+  }
+  poll();
+  // Fallback: poll the stored record (the old n8n flow, or when the open request was lost).
   function poll() {
     tries++;
     fetch(REPORT_ENDPOINT + '?handle=' + encodeURIComponent(handle) + '&t=' + Date.now(), { cache: 'no-store' })
@@ -1530,15 +1572,8 @@ function loadProfileReport() {
       .then(function (rec) {
         if (state.lead.handle !== handle) return;
         if (httpErrors >= 2) { giveUp(); return; }
-        if (rec && rec.status === 'ready' && rec.report && recIsFresh(rec)) {
-          state.aiReport = rec;
-          showAiReport(rec);
-          pixelTrack('ProfileReportReady', true);
-        } else if (rec && rec.status === 'limited' && recIsFresh(rec)) {
-          state.aiReport = rec;
-          showAiLimited(rec);
-        } else if (rec && rec.status === 'failed' && recIsFresh(rec)) {
-          giveUp();
+        if (applyRecord(rec, true)) {
+          return;
         } else if (tries < MAX_TRIES) {
           setTimeout(poll, POLL_MS);
         } else {
