@@ -1496,6 +1496,10 @@ function loadProfileReport() {
 
 function aiReportHtml(rec) {
   const r = rec.report || {};
+  const filled = function (arr) { return (Array.isArray(arr) ? arr : []).filter(function (x) { return typeof x === 'string' && x.trim(); }); };
+  if (r.bestPosts) r.bestPosts.makeNext = filled(r.bestPosts.makeNext);
+  if (r.bio) r.bio.stronger = filled(r.bio.stronger);
+  r.thisWeek = filled(r.thisWeek);
   const score = Math.max(0, Math.min(100, parseInt(r.score, 10) || 0));
   const color = colorFor(score);
   const circ = 2 * Math.PI * 42;
