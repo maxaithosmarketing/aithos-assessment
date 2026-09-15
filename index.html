@@ -689,6 +689,57 @@
   }
   .own-words p { font-style: italic; color: #3f3d3a; font-size: 15px; }
   .allred-note { margin-top: 18px; font-weight: 600; color: var(--black); }
+  .ai-report { margin-top: 34px; padding-top: 26px; border-top: 1px solid var(--line); }
+  .ai-head { text-align: center; }
+  .ai-head h2 { font-size: 24px; }
+  .ai-loading { text-align: center; padding: 26px 0 8px; }
+  .ai-loading .spinner { margin-bottom: 16px; }
+  .ai-loading-title { font-weight: 700; color: var(--black); font-size: 16px; }
+  .ai-loading p { color: var(--muted); font-size: 14px; margin-top: 6px; }
+  .ai-score-card { background: var(--card); border-radius: 14px; padding: 20px 18px; margin-top: 18px; }
+  .ai-score-row { display: flex; gap: 18px; align-items: center; }
+  .ai-ring { position: relative; width: 96px; height: 96px; flex-shrink: 0; }
+  .ai-ring svg { width: 100%; height: 100%; transform: rotate(-90deg); }
+  .ai-ring-bg { fill: none; stroke: #e6e3dd; stroke-width: 9; }
+  .ai-ring-fill { fill: none; stroke: currentColor; stroke-width: 9; stroke-linecap: round; transition: stroke-dashoffset 1.1s ease; }
+  .ai-ring-num {
+    position: absolute; inset: 0;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 800; font-size: 26px; color: var(--black); line-height: 1;
+  }
+  .ai-ring-num span { font-size: 11px; color: var(--muted); font-weight: 700; margin-left: 1px; }
+  .ai-score-label { font-size: 11px; font-weight: 800; letter-spacing: 1.5px; text-transform: uppercase; }
+  .ai-verdict { font-size: 18px; line-height: 1.35; margin-top: 4px; color: var(--black); }
+  .ai-p { margin-top: 10px; font-size: 14.5px; }
+  .ai-muted { color: #55534f; font-size: 14px; margin-top: 4px; }
+  .ai-note { margin-top: 12px; background: #ffffff; border-radius: 10px; padding: 12px 14px; font-size: 14px; color: #3f3d3a; }
+  .ai-mini-label {
+    font-size: 11px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase;
+    color: var(--orange); margin-top: 12px; margin-bottom: 4px;
+  }
+  .ai-mini-label.ai-first, .ai-note .ai-mini-label, .ai-todo .ai-mini-label { margin-top: 0; }
+  .ai-h3 { font-size: 20px; margin-top: 28px; color: var(--black); }
+  .ai-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 12px; margin-top: 12px; }
+  .ai-card { background: var(--card); border-radius: 12px; padding: 16px; }
+  .ai-card-good { border-left: 4px solid var(--green); }
+  .ai-card-title { font-weight: 800; color: var(--black); }
+  .ai-card p { margin-top: 6px; font-size: 14px; }
+  .ai-block { margin-top: 12px; }
+  .ai-leaks { display: flex; flex-direction: column; gap: 12px; margin-top: 12px; }
+  .ai-leak { background: var(--card); border-radius: 12px; padding: 16px 17px; }
+  .ai-leak-title { display: flex; align-items: center; gap: 11px; font-weight: 800; color: var(--black); font-size: 16px; }
+  .ai-todo { margin-top: 12px; background: #fdeee2; border-left: 3px solid var(--orange); border-radius: 0 10px 10px 0; padding: 12px 14px; font-size: 14.5px; }
+  .ai-ol { padding-left: 20px; margin-top: 4px; display: flex; flex-direction: column; gap: 6px; }
+  .ai-bio-line { padding: 12px 0; border-top: 1px solid var(--line); }
+  .ai-bio .ai-bio-line:first-child { border-top: 0; padding-top: 0; }
+  .ai-bio-top { display: flex; justify-content: space-between; gap: 12px; align-items: flex-start; }
+  .ai-bio-text { font-weight: 700; color: var(--black); }
+  .ai-tag { font-size: 10.5px; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; padding: 3px 9px; border-radius: 999px; white-space: nowrap; flex-shrink: 0; }
+  .ai-tag-keep { background: #e3f3e8; color: var(--green); }
+  .ai-tag-fix { background: #fdeee2; color: var(--orange); }
+  .ai-tag-cut { background: #fbe3e3; color: var(--red); }
+  .ai-stronger { background: var(--black); color: #ffffff; border-radius: 12px; padding: 16px 18px; font-weight: 600; font-size: 15px; display: flex; flex-direction: column; gap: 6px; margin-top: 6px; }
+  .ai-week { display: flex; flex-direction: column; gap: 10px; margin-top: 12px; }
   .next-steps { margin-top: 20px; text-align: left; display: flex; flex-direction: column; gap: 10px; }
   .next-title {
     font-size: 11px;
@@ -754,6 +805,9 @@
 </footer>
 <script>
 const RESULTS_ENDPOINT = 'https://aithos.app.n8n.cloud/webhook/aithos-assessment';
+// Live Instagram profile analysis (n8n workflow "Aithos Profile Analyzer"). Empty = feature off.
+var ANALYZE_ENDPOINT = 'https://aithos.app.n8n.cloud/webhook/aithos-analyze';
+var REPORT_ENDPOINT = 'https://aithos.app.n8n.cloud/webhook/aithos-report';
 const DM_URL = 'https://ig.me/m/vonk.max?ref=assessment';
 // WhatsApp number in international format, digits only (e.g. '31612345678').
 // When set, the results CTA becomes a WhatsApp button with a prefilled message; empty = Instagram DM button.
@@ -835,6 +889,27 @@ const COPY = {
     nextStep1: "You send the message. It is already filled in.",
     nextStep2: "I personally look at your results.",
     nextStep3: "You get targeted help: assets for your #1 fix, or a short call.",
+    aiEyebrow: "Live analysis of",
+    aiHeading: "Your profile analysis",
+    aiLoading: "Analyzing your profile",
+    aiLoadingSub: "Your bio and latest posts are being read the way a cold visitor sees them. This usually takes under a minute.",
+    aiScoreOf: "/100",
+    aiFirst5: "First 5 seconds, cold visitor",
+    aiContext: "Context",
+    aiWorking: "What's working",
+    aiLeaks: "Where you're leaving clients on the table",
+    aiWhy: "Why it matters",
+    aiWhatToDo: "What to do",
+    aiBest: "Your best posts, and the pattern behind them",
+    aiPattern: "The pattern",
+    aiWhyWorks: "Why it works",
+    aiMakeNext: "Make this next",
+    aiBio: "Your bio, line by line",
+    aiStronger: "The stronger version",
+    aiThisWeek: "Do this week",
+    tagKeep: "Keep",
+    tagFix: "Fix",
+    tagCut: "Cut",
     testiHeading: "What Our Clients Say",
     testiEyebrow: "The proof",
     faqHeading: "FAQ",
@@ -876,6 +951,27 @@ const COPY = {
     nextStep1: "Jij stuurt het appje. Het staat al voor je klaar.",
     nextStep2: "Ik bekijk jouw uitslag persoonlijk.",
     nextStep3: "Je krijgt gerichte hulp: assets voor jouw #1 fix, of een korte call.",
+    aiEyebrow: "Live analyse van",
+    aiHeading: "Jouw profiel-analyse",
+    aiLoading: "Je profiel wordt geanalyseerd",
+    aiLoadingSub: "Je bio en laatste posts worden gelezen zoals een koude bezoeker ze ziet. Dit duurt meestal minder dan een minuut.",
+    aiScoreOf: "/100",
+    aiFirst5: "Eerste 5 seconden, koude bezoeker",
+    aiContext: "Context",
+    aiWorking: "Wat werkt",
+    aiLeaks: "Waar je klanten laat liggen",
+    aiWhy: "Waarom dit telt",
+    aiWhatToDo: "Wat te doen",
+    aiBest: "Je beste posts, en het patroon erachter",
+    aiPattern: "Het patroon",
+    aiWhyWorks: "Waarom het werkt",
+    aiMakeNext: "Maak dit als volgende",
+    aiBio: "Je bio, regel voor regel",
+    aiStronger: "De sterkere versie",
+    aiThisWeek: "Doe dit deze week",
+    tagKeep: "Houden",
+    tagFix: "Fixen",
+    tagCut: "Schrappen",
     testiHeading: "Wat onze klanten zeggen",
     testiEyebrow: "Het bewijs",
     faqHeading: "FAQ",
@@ -1319,6 +1415,161 @@ function buildPayload(results) {
   };
 }
 
+function startProfileAnalysis() {
+  if (!ANALYZE_ENDPOINT || !state.lead.handle) return;
+  if (state.analysisFor === state.lead.handle) return;
+  state.analysisFor = state.lead.handle;
+  state.aiReport = null;
+  try {
+    fetch(ANALYZE_ENDPOINT, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ handle: state.lead.handle, name: state.lead.name, followers: state.lead.followers, lang: state.lang }),
+      keepalive: true
+    }).catch(function (err) { console.log('Profile analysis start failed:', err); });
+  } catch (err) {
+    console.log('Profile analysis start failed:', err);
+  }
+}
+
+function aiSkeletonHtml() {
+  return '<div class="ai-head"><div class="eyebrow">' + t('aiEyebrow') + ' @' + esc(state.lead.handle) + '</div><h2>' + t('aiHeading') + '</h2></div>' +
+    '<div class="ai-loading"><div class="spinner"></div><div class="ai-loading-title">' + t('aiLoading') + '</div><p>' + t('aiLoadingSub') + '</p></div>';
+}
+
+function animateAiRing() {
+  requestAnimationFrame(function () {
+    requestAnimationFrame(function () {
+      app.querySelectorAll('.ai-ring-fill').forEach(function (c) { c.style.strokeDashoffset = c.getAttribute('data-offset'); });
+    });
+  });
+}
+
+function applyAiScoreToCta(rec) {
+  if (!rec || !rec.report || !WHATSAPP_NUMBER) return;
+  const suffix = ' ' + (state.lang === 'nl' ? 'Profielscore: ' : 'Profile score: ') + rec.report.score + '/100.';
+  app.querySelectorAll('.cta-contact').forEach(function (a) {
+    if (a.href.indexOf('wa.me') === -1 || a.getAttribute('data-scored')) return;
+    a.href = a.href + encodeURIComponent(suffix);
+    a.setAttribute('data-scored', '1');
+  });
+}
+
+function showAiReport(rec) {
+  const box = document.getElementById('ai-report');
+  if (!box) return;
+  box.innerHTML = aiReportHtml(rec);
+  animateAiRing();
+  applyAiScoreToCta(rec);
+}
+
+function loadProfileReport() {
+  const box = document.getElementById('ai-report');
+  if (!box) return;
+  if (state.aiReport && state.aiReport.status === 'ready') { showAiReport(state.aiReport); return; }
+  if (!REPORT_ENDPOINT || !state.lead.handle) { box.remove(); return; }
+  const handle = state.lead.handle;
+  let tries = 0;
+  function giveUp() { const b = document.getElementById('ai-report'); if (b) b.remove(); }
+  function poll() {
+    tries++;
+    fetch(REPORT_ENDPOINT + '?handle=' + encodeURIComponent(handle) + '&t=' + Date.now(), { cache: 'no-store' })
+      .then(function (r) { return r.json(); })
+      .then(function (rec) {
+        if (state.lead.handle !== handle) return;
+        if (rec && rec.status === 'ready' && rec.report) {
+          state.aiReport = rec;
+          showAiReport(rec);
+          pixelTrack('ProfileReportReady', true);
+        } else if (rec && rec.status === 'failed') {
+          giveUp();
+        } else if (tries < 14) {
+          setTimeout(poll, tries < 3 ? 6000 : 10000);
+        } else {
+          giveUp();
+        }
+      })
+      .catch(function () { if (tries < 14) setTimeout(poll, 10000); else giveUp(); });
+  }
+  poll();
+}
+
+function aiReportHtml(rec) {
+  const r = rec.report || {};
+  const score = Math.max(0, Math.min(100, parseInt(r.score, 10) || 0));
+  const color = colorFor(score);
+  const circ = 2 * Math.PI * 42;
+  const offset = circ * (1 - score / 100);
+  let html = '<div class="ai-head"><div class="eyebrow">' + t('aiEyebrow') + ' @' + esc(rec.handle || state.lead.handle) + '</div><h2>' + t('aiHeading') + '</h2></div>';
+
+  html += '<div class="ai-score-card">' +
+    '<div class="ai-score-row">' +
+      '<div class="ai-ring"><svg viewBox="0 0 100 100"><circle class="ai-ring-bg" cx="50" cy="50" r="42"/><circle class="ai-ring-fill c-' + color + '" cx="50" cy="50" r="42" style="stroke-dasharray:' + circ.toFixed(1) + ';stroke-dashoffset:' + circ.toFixed(1) + '" data-offset="' + offset.toFixed(1) + '"/></svg><div class="ai-ring-num">' + score + '<span>' + t('aiScoreOf') + '</span></div></div>' +
+      '<div class="ai-score-text"><div class="ai-score-label c-' + color + '">' + esc(r.scoreLabel || '') + '</div><h3 class="ai-verdict">' + esc(r.verdict || '') + '</h3></div>' +
+    '</div>' +
+    (r.firstFiveSeconds ? '<p class="ai-p"><strong>' + t('aiFirst5') + ':</strong> ' + esc(r.firstFiveSeconds) + '</p>' : '') +
+    (r.trustNote ? '<div class="ai-note"><div class="ai-mini-label">' + t('aiContext') + '</div>' + esc(r.trustNote) + '</div>' : '') +
+  '</div>';
+
+  if (Array.isArray(r.working) && r.working.length) {
+    html += '<h3 class="ai-h3">' + t('aiWorking') + '</h3><div class="ai-cards">';
+    r.working.forEach(function (w) {
+      html += '<div class="ai-card ai-card-good"><div class="ai-card-title">' + esc(w.title || '') + '</div><p>' + esc(w.detail || '') + '</p></div>';
+    });
+    html += '</div>';
+  }
+
+  if (Array.isArray(r.leaks) && r.leaks.length) {
+    html += '<h3 class="ai-h3">' + t('aiLeaks') + '</h3><div class="ai-leaks">';
+    r.leaks.forEach(function (l, i) {
+      html += '<div class="ai-leak">' +
+        '<div class="ai-leak-title"><span class="fix-step-num">' + (i + 1) + '</span><span>' + esc(l.title || '') + '</span></div>' +
+        '<p class="ai-p">' + esc(l.detail || '') + '</p>' +
+        (l.whyItMatters ? '<div class="ai-mini-label">' + t('aiWhy') + '</div><p class="ai-muted">' + esc(l.whyItMatters) + '</p>' : '') +
+        (l.whatToDo ? '<div class="ai-todo"><div class="ai-mini-label">' + t('aiWhatToDo') + '</div>' + esc(l.whatToDo) + '</div>' : '') +
+      '</div>';
+    });
+    html += '</div>';
+  }
+
+  if (r.bestPosts && (r.bestPosts.pattern || (Array.isArray(r.bestPosts.makeNext) && r.bestPosts.makeNext.length))) {
+    html += '<h3 class="ai-h3">' + t('aiBest') + '</h3><div class="ai-card ai-block">' +
+      (r.bestPosts.pattern ? '<div class="ai-mini-label ai-first">' + t('aiPattern') + '</div><p>' + esc(r.bestPosts.pattern) + '</p>' : '') +
+      (r.bestPosts.whyItWorks ? '<div class="ai-mini-label">' + t('aiWhyWorks') + '</div><p class="ai-muted">' + esc(r.bestPosts.whyItWorks) + '</p>' : '');
+    if (Array.isArray(r.bestPosts.makeNext) && r.bestPosts.makeNext.length) {
+      html += '<div class="ai-todo"><div class="ai-mini-label">' + t('aiMakeNext') + '</div><ol class="ai-ol">';
+      r.bestPosts.makeNext.forEach(function (m) { html += '<li>' + esc(m) + '</li>'; });
+      html += '</ol></div>';
+    }
+    html += '</div>';
+  }
+
+  if (r.bio && Array.isArray(r.bio.lines) && r.bio.lines.length) {
+    html += '<h3 class="ai-h3">' + t('aiBio') + '</h3><div class="ai-card ai-block ai-bio">';
+    r.bio.lines.forEach(function (ln) {
+      const tag = ['keep', 'fix', 'cut'].indexOf(ln.tag) >= 0 ? ln.tag : 'fix';
+      const tagLabel = tag === 'keep' ? t('tagKeep') : (tag === 'cut' ? t('tagCut') : t('tagFix'));
+      html += '<div class="ai-bio-line"><div class="ai-bio-top"><span class="ai-bio-text">' + esc(ln.text || '') + '</span><span class="ai-tag ai-tag-' + tag + '">' + tagLabel + '</span></div>' +
+        (ln.note ? '<p class="ai-muted">' + esc(ln.note) + '</p>' : '') + '</div>';
+    });
+    if (Array.isArray(r.bio.stronger) && r.bio.stronger.length) {
+      html += '<div class="ai-mini-label">' + t('aiStronger') + '</div><div class="ai-stronger">';
+      r.bio.stronger.forEach(function (s) { html += '<div>' + esc(s) + '</div>'; });
+      html += '</div>' + (r.bio.strongerWhy ? '<p class="ai-muted ai-p">' + esc(r.bio.strongerWhy) + '</p>' : '');
+    }
+    html += '</div>';
+  }
+
+  if (Array.isArray(r.thisWeek) && r.thisWeek.length) {
+    html += '<h3 class="ai-h3">' + t('aiThisWeek') + '</h3><div class="ai-week">';
+    r.thisWeek.forEach(function (w, i) {
+      html += '<div class="next-step"><div class="fix-step-num">' + (i + 1) + '</div><span>' + esc(w) + '</span></div>';
+    });
+    html += '</div>';
+  }
+  return html;
+}
+
 function postResults(results) {
   if (state.posted) return;
   state.posted = true;
@@ -1594,6 +1845,7 @@ function renderLead() {
     state.lead.handle = handle;
     state.lead.followers = followers;
     pixelTrack('Lead');
+    startProfileAnalysis();
     state.screen = 'question';
     state.qIndex = 0;
     render();
@@ -1753,6 +2005,10 @@ function renderResults() {
     html += '<p class="allred-note">' + t('allRedNote') + '</p>';
   }
 
+  if (ANALYZE_ENDPOINT && REPORT_ENDPOINT && state.lead.handle) {
+    html += '<div class="ai-report" id="ai-report">' + aiSkeletonHtml() + '</div>';
+  }
+
   if (results.stage !== 5) {
     const plan = PLANS[results.weakestKey][state.lang];
     html +=
@@ -1839,6 +2095,7 @@ function renderResults() {
   });
 
   postResults(results);
+  loadProfileReport();
 }
 
 document.getElementById('logo').src = LOGO_SRC;
