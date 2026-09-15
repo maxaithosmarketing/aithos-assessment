@@ -689,6 +689,14 @@
   }
   .own-words p { font-style: italic; color: #3f3d3a; font-size: 15px; }
   .allred-note { margin-top: 18px; font-weight: 600; color: var(--black); }
+  .save-note { margin-top: 22px; border: 1.5px dashed var(--orange); border-radius: 12px; padding: 14px 16px; background: #fff7f2; }
+  .save-note-title { font-weight: 700; color: var(--black); font-size: 14px; display: flex; align-items: center; gap: 8px; }
+  .save-note-title svg { width: 16px; height: 16px; flex: none; }
+  .save-note p { font-size: 14px; color: #3f3d3a; margin-top: 6px; }
+  .save-note a { color: var(--orange); font-weight: 600; }
+  .ai-limited { text-align: center; padding: 22px 10px 8px; }
+  .ai-limited-title { font-weight: 700; color: var(--black); font-size: 16px; }
+  .ai-limited p { color: #3f3d3a; font-size: 14px; margin-top: 8px; max-width: 520px; margin-left: auto; margin-right: auto; }
   .ai-report { margin-top: 34px; padding-top: 26px; border-top: 1px solid var(--line); }
   .ai-head { text-align: center; }
   .ai-head h2 { font-size: 24px; }
@@ -894,6 +902,11 @@ const COPY = {
     aiHeading: "Your profile analysis",
     aiLoading: "Analyzing your profile",
     aiLoadingSub: "Your bio and latest posts are being read the way a cold visitor sees them. This usually takes under a minute.",
+    aiLimitedTitle: "This profile was already analyzed",
+    aiLimited: "Every Instagram profile can be analyzed once every 7 days, to prevent abuse. @{handle} was last analyzed on {last}. A new analysis is possible from {next}. Your quiz results and fix-first plan below are fully up to date.",
+    saveTitle: "Save this page",
+    saveNote: "Your results are shown once and are not stored anywhere you can log into. Take a screenshot now if you want to look back at your score, or message Max on WhatsApp and he will keep your report at hand.",
+    saveWa: "Message Max on WhatsApp",
     aiScoreOf: "/100",
     aiFirst5: "First 5 seconds, cold visitor",
     aiContext: "Context",
@@ -958,6 +971,11 @@ const COPY = {
     aiHeading: "Jouw profiel-analyse",
     aiLoading: "Je profiel wordt geanalyseerd",
     aiLoadingSub: "Je bio en laatste posts worden gelezen zoals een koude bezoeker ze ziet. Dit duurt meestal minder dan een minuut.",
+    aiLimitedTitle: "Dit profiel is al geanalyseerd",
+    aiLimited: "Elk Instagram-profiel kan één keer per 7 dagen worden geanalyseerd, om misbruik te voorkomen. @{handle} is voor het laatst geanalyseerd op {last}. Een nieuwe analyse is mogelijk vanaf {next}. Je quiz-uitslag en fix-first plan hieronder zijn wel helemaal actueel.",
+    saveTitle: "Bewaar deze pagina",
+    saveNote: "Je uitslag wordt één keer getoond en wordt nergens opgeslagen waar je later kunt inloggen. Maak nu een screenshot als je je score wilt terugzien, of stuur Max een bericht op WhatsApp, dan houdt hij je rapport bij de hand.",
+    saveWa: "Stuur Max een bericht op WhatsApp",
     aiScoreOf: "/100",
     aiFirst5: "Eerste 5 seconden, koude bezoeker",
     aiContext: "Context",
@@ -1424,6 +1442,7 @@ function startProfileAnalysis() {
   if (!ANALYZE_ENDPOINT || !state.lead.handle) return;
   if (state.analysisFor === state.lead.handle) return;
   state.analysisFor = state.lead.handle;
+  state.analysisStartedAt = Date.now();
   state.aiReport = null;
   try {
     fetch(ANALYZE_ENDPOINT, {
@@ -1468,10 +1487,33 @@ function showAiReport(rec) {
   applyAiScoreToCta(rec);
 }
 
+function fmtDate(iso) {
+  const d = new Date(iso);
+  if (isNaN(d)) return '';
+  return d.toLocaleDateString(state.lang === 'nl' ? 'nl-NL' : 'en-GB', { weekday: 'long', day: 'numeric', month: 'long' });
+}
+
+function showAiLimited(rec) {
+  const box = document.getElementById('ai-report');
+  if (!box) return;
+  const text = t('aiLimited').replace('{handle}', rec.handle || state.lead.handle).replace('{last}', fmtDate(rec.generatedAt)).replace('{next}', fmtDate(rec.nextAllowedAt));
+  box.innerHTML = '<div class="ai-head"><div class="eyebrow">' + t('aiEyebrow') + ' @' + esc(state.lead.handle) + '</div><h2>' + t('aiHeading') + '</h2></div>' +
+    '<div class="ai-limited"><div class="ai-limited-title">' + t('aiLimitedTitle') + '</div><p>' + esc(text) + '</p></div>';
+}
+
+// A record only counts for this session if it was produced after the analysis was kicked off
+// (minus an hour of clock tolerance); older records belong to a previous run of this handle.
+function recIsFresh(rec) {
+  const ts = Date.parse(rec.attemptedAt || rec.generatedAt || '');
+  if (isNaN(ts) || !state.analysisStartedAt) return true;
+  return ts >= state.analysisStartedAt - 3600000;
+}
+
 function loadProfileReport() {
   const box = document.getElementById('ai-report');
   if (!box) return;
   if (state.aiReport && state.aiReport.status === 'ready') { showAiReport(state.aiReport); return; }
+  if (state.aiReport && state.aiReport.status === 'limited') { showAiLimited(state.aiReport); return; }
   if (!REPORT_ENDPOINT || !state.lead.handle) { box.remove(); return; }
   const handle = state.lead.handle;
   let tries = 0;
@@ -1482,11 +1524,14 @@ function loadProfileReport() {
       .then(function (r) { return r.json(); })
       .then(function (rec) {
         if (state.lead.handle !== handle) return;
-        if (rec && rec.status === 'ready' && rec.report) {
+        if (rec && rec.status === 'ready' && rec.report && recIsFresh(rec)) {
           state.aiReport = rec;
           showAiReport(rec);
           pixelTrack('ProfileReportReady', true);
-        } else if (rec && rec.status === 'failed') {
+        } else if (rec && rec.status === 'limited' && recIsFresh(rec)) {
+          state.aiReport = rec;
+          showAiLimited(rec);
+        } else if (rec && rec.status === 'failed' && recIsFresh(rec)) {
           giveUp();
         } else if (tries < 14) {
           setTimeout(poll, tries < 3 ? 6000 : 10000);
@@ -1995,6 +2040,9 @@ function renderResults() {
   }
 
   html += ctaButtonHtml('cta-early');
+
+  html += '<div class="save-note no-print"><div class="save-note-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>' + t('saveTitle') + '</div>' +
+    '<p>' + t('saveNote') + (isWa ? ' <a class="cta-contact" href="' + ctaHref + '" target="_blank" rel="noopener">' + t('saveWa') + '</a>' : '') + '</p></div>';
 
   html += '<div class="pillars">';
 
