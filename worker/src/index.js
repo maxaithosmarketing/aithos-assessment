@@ -5,9 +5,12 @@
 //                  writes the AI report with Claude and returns the finished record.
 //                  The page keeps this request open while the quiz is filled in.
 //   GET  /report?handle=  returns the stored record (fallback when the /analyze call was lost)
+//   POST /stripe   Stripe webhook (customer.created) -> client folder in Drive + welcome email (onboarding.js)
 //
 // Secrets (wrangler secret put): APIFY_TOKEN, ANTHROPIC_API_KEY, NOTION_TOKEN
 // KV binding: REPORTS
+
+import { handleStripeWebhook } from './onboarding.js';
 
 const CORS = {
   'Access-Control-Allow-Origin': '*',
@@ -31,10 +34,11 @@ const APIFY_FIELDS = [
 ].join(',');
 
 export default {
-  async fetch(request, env) {
+  async fetch(request, env, ctx) {
     const url = new URL(request.url);
     if (request.method === 'OPTIONS') return new Response(null, { status: 204, headers: CORS });
     try {
+      if (url.pathname === '/stripe' && request.method === 'POST') { const r = await handleStripeWebhook(request, env, ctx); return json(r.body, r.status); }
       if (url.pathname === '/analyze' && request.method === 'POST') return json(await analyze(await request.json(), env));
       if (url.pathname === '/report' && request.method === 'GET') return json(await getReport(url.searchParams.get('handle'), env));
       if (url.pathname === '/lead' && request.method === 'POST') return json(await saveLead(await request.json(), env));

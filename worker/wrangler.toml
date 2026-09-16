@@ -7,3 +7,9 @@ workers_dev = true
 [[kv_namespaces]]
 binding = "REPORTS"
 id = "f0811ab085974c23a60e45f3236248bb"
+
+[vars]
+SMTP_HOST = "smtp.transip.email"
+SMTP_USER = "max@aithosmarketing.nl"
+MAIL_FROM = "Max Vonk <max@aithosmarketing.nl>"
+MAIL_CC = "info@aithosmarketing.nl"

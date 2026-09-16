@@ -1,3 +1,5 @@
 node_modules/
 .wrangler/
 .dev.vars
+apps-script/Code.gs
+apps-script/KEY.txt
