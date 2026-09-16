@@ -1,5 +1,5 @@
 // Client onboarding (replaces the n8n "Onboarding Automation" workflow):
-//   Stripe customer.created -> Google Drive client folder via Apps Script -> welcome email via SMTP.
+//   Stripe customer.created -> Google Drive client folder via Apps Script (-> welcome email via SMTP, currently off).
 //
 // Secrets: STRIPE_WEBHOOK_SECRET (live), STRIPE_WEBHOOK_SECRET_TEST (optional, test mode),
 //          SMTP_PASSWORD, APPS_SCRIPT_URL, APPS_SCRIPT_KEY
@@ -76,13 +76,19 @@ export async function runOnboarding(job, env) {
   } catch (e) {
     result.folderError = String(e && e.message || e).slice(0, 300);
   }
-  try {
-    await sendWelcomeEmail(job.name, job.email, env);
-    result.emailSent = true;
-  } catch (e) {
-    result.emailError = String(e && e.message || e).slice(0, 300);
+  // The welcome email is switched off (Max, 2026-09-16: content is outdated). Set WELCOME_EMAIL = "on"
+  // in wrangler.toml to send it again; the template lives in welcome-email.js.
+  if (env.WELCOME_EMAIL === 'on') {
+    try {
+      await sendWelcomeEmail(job.name, job.email, env);
+      result.emailSent = true;
+    } catch (e) {
+      result.emailError = String(e && e.message || e).slice(0, 300);
+    }
+  } else {
+    result.emailSkipped = true;
   }
-  if (result.folderError && result.emailError) result.status = 'failed';
+  if (result.folderError && !result.emailSent) result.status = 'failed';
   result.finishedAt = new Date().toISOString();
   await env.REPORTS.put(job.key, JSON.stringify(result), { expirationTtl: ONBOARD_TTL });
   return result;

@@ -11,6 +11,7 @@ binding = "REPORTS"
 id = "f0811ab085974c23a60e45f3236248bb"
 
 [vars]
+WELCOME_EMAIL = "off"
 SMTP_HOST = "smtp.transip.email"
 SMTP_USER = "max@aithosmarketing.nl"
 MAIL_FROM = "Max Vonk <max@aithosmarketing.nl>"
