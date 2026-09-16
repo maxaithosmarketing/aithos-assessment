@@ -2,6 +2,8 @@ name = "aithos-assessment"
 main = "src/index.js"
 compatibility_date = "2026-09-01"
 workers_dev = true
+# Keep variables that were added in the Cloudflare dashboard when deploying from here.
+keep_vars = true
 
 # Created with: npx wrangler kv namespace create REPORTS
 [[kv_namespaces]]

@@ -43,6 +43,11 @@ export default {
       if (url.pathname === '/report' && request.method === 'GET') return json(await getReport(url.searchParams.get('handle'), env));
       if (url.pathname === '/lead' && request.method === 'POST') return json(await saveLead(await request.json(), env));
       if (url.pathname === '/' ) return json({ ok: true, service: 'aithos-assessment' });
+      if (url.pathname === '/health') return json({ ok: true, configured: {
+        apify: !!env.APIFY_TOKEN, anthropic: !!env.ANTHROPIC_API_KEY, notion: !!env.NOTION_TOKEN,
+        stripeLive: !!env.STRIPE_WEBHOOK_SECRET, stripeTest: !!env.STRIPE_WEBHOOK_SECRET_TEST,
+        smtp: !!env.SMTP_PASSWORD && !!env.SMTP_USER, appsScriptUrl: !!env.APPS_SCRIPT_URL, appsScriptKey: !!env.APPS_SCRIPT_KEY
+      } });
       return json({ error: 'not_found' }, 404);
     } catch (e) {
       return json({ error: String(e && e.message || e).slice(0, 300) }, 500);
