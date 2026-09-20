@@ -12,6 +12,7 @@
 // KV binding: REPORTS
 
 import { handleStripeWebhook } from './onboarding.js';
+import { handleInvoicePaid } from './finance.js';
 
 const CORS = {
   'Access-Control-Allow-Origin': '*',
@@ -40,6 +41,12 @@ export default {
     if (request.method === 'OPTIONS') return new Response(null, { status: 204, headers: CORS });
     try {
       if (url.pathname === '/stripe' && request.method === 'POST') { const r = await handleStripeWebhook(request, env, ctx); return json(r.body, r.status); }
+      // Manual replay of a Stripe invoice object (for tests and back-filling), guarded by the shared key.
+      if (url.pathname === '/stripe/replay-invoice' && request.method === 'POST') {
+        if (!env.APPS_SCRIPT_KEY || request.headers.get('X-Aithos-Key') !== env.APPS_SCRIPT_KEY) return json({ error: 'unauthorized' }, 401);
+        const res = await handleInvoicePaid(await request.json(), env);
+        return json(res, res.ok ? 200 : 500);
+      }
       if (url.pathname === '/analyze' && request.method === 'POST') return json(await analyze(await request.json(), env));
       if (url.pathname === '/report' && request.method === 'GET') return json(await getReport(url.searchParams.get('handle'), env));
       if (url.pathname === '/lead' && request.method === 'POST') return json(await saveLead(await request.json(), env));
