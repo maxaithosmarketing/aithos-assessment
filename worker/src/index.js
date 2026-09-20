@@ -5,7 +5,8 @@
 //                  writes the AI report with Claude and returns the finished record.
 //                  The page keeps this request open while the quiz is filled in.
 //   GET  /report?handle=  returns the stored record (fallback when the /analyze call was lost)
-//   POST /stripe   Stripe webhook (customer.created) -> client folder in Drive + welcome email (onboarding.js)
+//   POST /stripe   Stripe webhook: customer.created -> client folder in Drive (onboarding.js),
+//                  invoice.paid -> row in Notion Financiën (finance.js)
 //
 // Secrets (wrangler secret put): APIFY_TOKEN, ANTHROPIC_API_KEY, NOTION_TOKEN
 // KV binding: REPORTS

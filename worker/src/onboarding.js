@@ -1,11 +1,13 @@
 // Client onboarding (replaces the n8n "Onboarding Automation" workflow):
 //   Stripe customer.created -> Google Drive client folder via Apps Script (-> welcome email via SMTP, currently off).
+//   Stripe invoice.paid     -> row in the Notion Financiën database (finance.js).
 //
 // Secrets: STRIPE_WEBHOOK_SECRET (live), STRIPE_WEBHOOK_SECRET_TEST (optional, test mode),
 //          SMTP_PASSWORD, APPS_SCRIPT_URL, APPS_SCRIPT_KEY
 // Vars (wrangler.toml): SMTP_HOST, SMTP_USER, MAIL_FROM, MAIL_CC
 import { sendMail } from './smtp.js';
 import { WELCOME_SUBJECT, WELCOME_HTML } from './welcome-email.js';
+import { handleInvoicePaid } from './finance.js';
 
 const ONBOARD_TTL = 90 * 24 * 3600;
 
@@ -52,6 +54,14 @@ export async function handleStripeWebhook(request, env, ctx) {
 
   let event;
   try { event = JSON.parse(raw); } catch (e) { return { status: 400, body: { error: 'invalid_json' } }; }
+  if (event.type === 'invoice.paid') {
+    try {
+      const res = await handleInvoicePaid(event.data && event.data.object, env);
+      return { status: res.ok ? 200 : 500, body: res };
+    } catch (e) {
+      return { status: 500, body: { ok: false, error: String(e && e.message || e).slice(0, 300) } };
+    }
+  }
   if (event.type !== 'customer.created') return { status: 200, body: { ok: true, ignored: event.type } };
 
   const customer = (event.data && event.data.object) || {};
